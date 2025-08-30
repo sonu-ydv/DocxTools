@@ -18,6 +18,8 @@ declare const PptxGenJS: any;
 declare const JSZip: any;
 declare const fabric: any;
 declare const Tesseract: any;
+// FIX: Added declaration for XLSX to resolve 'Cannot find name' error.
+declare const XLSX: any;
 
 const createDownload = (data: Uint8Array | Blob, filename: string) => {
     const blob = data instanceof Blob ? data : new Blob([data], { type: 'application/octet-stream' });
@@ -494,12 +496,17 @@ const EditPdfComponent = React.forwardRef<EditPdfComponentRef, {
         };
     }, [previewUrl]);
 
+    // Consistent styling for controls
+    const inputBaseClasses = 'h-9 px-2 py-1 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-primary-red focus:border-transparent';
+    const colorInputClasses = 'w-8 h-8 p-1 border-2 border-transparent hover:border-primary-red dark:border-gray-600 dark:hover:border-primary-red rounded cursor-pointer bg-clip-content';
+    const rangeInputClasses = 'w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-primary-red';
+
     const ToolButton = ({ tool, Icon, label }: { tool: string, Icon: React.FC<{className?: string}>, label: string }) =>
         React.createElement('button', {
             onClick: () => setActiveTool(tool),
-            className: `p-2 rounded-md ${activeTool === tool ? 'bg-primary-red text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}`,
+            className: `p-2 rounded-md transition-colors ${activeTool === tool ? 'bg-primary-red text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}`,
             title: label,
-        }, React.createElement(Icon, { className: 'h-6 w-6' }));
+        } as React.ComponentProps<'button'>, React.createElement(Icon, { className: 'h-6 w-6' }));
         
     const TextFormatButton = ({ style, Icon, label, value }: { style?: string, Icon: React.FC<{className?: string}>, label: string, value?: string }) =>
         React.createElement('button', {
@@ -509,7 +516,7 @@ const EditPdfComponent = React.forwardRef<EditPdfComponentRef, {
                 else if (label === 'Underline') toggleTextStyle('underline');
                 else if (label.includes('Align')) setAlignment(value as 'left' | 'center' | 'right');
             },
-            className: `p-2 rounded-md ${
+            className: `p-2 rounded-md transition-colors ${
                 (label === 'Bold' && activeObjectStyles.fontWeight === 'bold') ||
                 (label === 'Italic' && activeObjectStyles.fontStyle === 'italic') ||
                 (label === 'Underline' && activeObjectStyles.underline) ||
@@ -517,20 +524,21 @@ const EditPdfComponent = React.forwardRef<EditPdfComponentRef, {
                  ? 'bg-blue-600 text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
             }`,
             title: label,
-        }, React.createElement(Icon, { className: 'h-5 w-5' }));
+        } as React.ComponentProps<'button'>, React.createElement(Icon, { className: 'h-5 w-5' }));
     
     const TextToolbar = () => React.createElement('div', { className: 'flex items-center gap-1 border-l pl-2 ml-2 dark:border-gray-600' },
-        React.createElement('label', { title: 'Text Color', className: 'flex items-center gap-1 text-sm' }, 'Color:', 
-            React.createElement('input', { 
-                type: 'color', 
-                value: toolSettings.textColor, 
+        React.createElement('label', { className: 'flex items-center' },
+            React.createElement('input', {
+                type: 'color',
+                title: 'Text Color',
+                value: toolSettings.textColor,
                 onChange: e => {
                     const newColor = e.target.value;
                     applyTextFormatting('fill', newColor);
                     setToolSettings(s => ({...s, textColor: newColor}));
                 },
-                className: 'w-8 h-8 cursor-pointer p-0 border-none rounded overflow-hidden bg-transparent' 
-            })
+                className: colorInputClasses,
+            } as React.ComponentProps<'input'>)
         ),
         React.createElement('div', { className: 'w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1' }),
         React.createElement(TextFormatButton, { Icon: BoldIcon, label: 'Bold' }),
@@ -541,34 +549,56 @@ const EditPdfComponent = React.forwardRef<EditPdfComponentRef, {
         React.createElement(TextFormatButton, { Icon: AlignCenterIcon, label: 'Align Center', value: 'center' }),
         React.createElement(TextFormatButton, { Icon: AlignRightIcon, label: 'Align Right', value: 'right' }),
         React.createElement('div', { className: 'w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1' }),
-// FIX: Unrolling the map call for font options to avoid a TypeScript type inference issue with the 'value' prop on <option> elements.
         React.createElement('select', {
+            title: 'Font Family',
             value: toolSettings.fontFamily,
             onChange: e => { applyTextFormatting('fontFamily', e.target.value); setToolSettings(s => ({...s, fontFamily: e.target.value})); },
-            className: 'p-1 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 text-sm h-9'
-        },
-            React.createElement('option', { key: 'Arial', value: 'Arial, sans-serif' }, 'Arial'),
-            React.createElement('option', { key: 'Helvetica', value: 'Helvetica, sans-serif' }, 'Helvetica'),
-            React.createElement('option', { key: 'Times New Roman', value: "'Times New Roman', Times, serif" }, 'Times New Roman'),
-            React.createElement('option', { key: 'Courier New', value: "'Courier New', Courier, monospace" }, 'Courier New'),
-            React.createElement('option', { key: 'Roboto', value: 'Roboto, sans-serif' }, 'Roboto'),
-            React.createElement('option', { key: 'Montserrat', value: 'Montserrat, sans-serif' }, 'Montserrat'),
-            React.createElement('option', { key: 'Lobster', value: 'Lobster, cursive' }, 'Lobster'),
-            React.createElement('option', { key: 'Playfair Display', value: "'Playfair Display', serif" }, 'Playfair Display')
+            className: `${inputBaseClasses} w-40`
+        } as React.ComponentProps<'select'>,
+            ...fonts.map(font => React.createElement('option', { key: font.name, value: font.family, style: { fontFamily: font.family } }, font.name))
         ),
-        React.createElement('input', { 
-            type: 'number', value: toolSettings.fontSize,
+        React.createElement('input', {
+            type: 'number',
+            title: 'Font Size',
+            value: toolSettings.fontSize,
             onChange: e => { const size = parseInt(e.target.value, 10); if (size > 0) { applyTextFormatting('fontSize', size); setToolSettings(s => ({...s, fontSize: size})); } },
-            className: 'w-16 p-1 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 text-sm h-9'
-        })
+            className: `${inputBaseClasses} w-20`,
+        } as React.ComponentProps<'input'>)
     );
 
     const ShapeToolbar = () => React.createElement(React.Fragment, null,
         React.createElement('div', { className: 'w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1' }),
-        React.createElement('label', { title: 'Fill Color', className: 'flex items-center gap-1 text-sm' }, 'Fill:', React.createElement('input', { type: 'color', value: toolSettings.fillColor, onChange: e => handleColorChange('fill', e.target.value), className: 'w-8 h-8 cursor-pointer p-0 border-none' })),
-        React.createElement('label', { title: 'Stroke Color', className: 'flex items-center gap-1 text-sm' }, 'Stroke:', React.createElement('input', { type: 'color', value: toolSettings.strokeColor, onChange: e => handleColorChange('stroke', e.target.value), className: 'w-8 h-8 cursor-pointer p-0 border-none' })),
-        React.createElement('label', { className: 'flex items-center gap-1 text-sm', title: 'Brush/Stroke Size' }, 'Size:', React.createElement('input', { type: 'range', min: 1, max: 50, value: toolSettings.brushWidth, onChange: e => setToolSettings(s => ({ ...s, brushWidth: parseInt(e.target.value, 10) })) }))
+        React.createElement('label', { className: 'flex items-center' },
+            React.createElement('input', {
+                type: 'color',
+                title: 'Fill Color',
+                value: toolSettings.fillColor,
+                onChange: e => handleColorChange('fill', e.target.value),
+                className: colorInputClasses,
+            } as React.ComponentProps<'input'>)
+        ),
+        React.createElement('label', { className: 'flex items-center' },
+            React.createElement('input', {
+                type: 'color',
+                title: 'Stroke Color',
+                value: toolSettings.strokeColor,
+                onChange: e => handleColorChange('stroke', e.target.value),
+                className: colorInputClasses,
+            } as React.ComponentProps<'input'>)
+        ),
+        React.createElement('label', { className: 'flex items-center gap-2 text-sm', title: 'Brush/Stroke Size' } as React.ComponentProps<'label'>, 'Size:',
+            React.createElement('input', {
+                type: 'range',
+                min: 1,
+                max: 50,
+                value: toolSettings.brushWidth,
+                onChange: e => setToolSettings(s => ({ ...s, brushWidth: parseInt(e.target.value, 10) })),
+                className: rangeInputClasses,
+            }),
+            React.createElement('span', { className: 'w-6 text-center text-xs font-mono' }, toolSettings.brushWidth)
+        )
     );
+
 
     if (isGenerating) {
         return React.createElement('div', { className: 'h-screen w-screen flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-900 text-gray-800 dark:text-gray-200' },
@@ -583,9 +613,12 @@ const EditPdfComponent = React.forwardRef<EditPdfComponentRef, {
             React.createElement('header', { className: 'flex items-center justify-between p-2 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm' },
                 React.createElement('p', { className: 'text-lg font-bold truncate text-gray-800 dark:text-gray-200 pl-2' }, outputFilename),
                 React.createElement('div', { className: 'flex items-center gap-2' },
-                    React.createElement('button', { onClick: handleBackToEditor, className: 'px-4 py-2 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600' }, 'Back to Editor'),
-                    React.createElement('button', { onClick: handleDownload, className: 'px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700' }, 'Download PDF'),
-                    React.createElement('button', { onClick: onClose, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Exit' }, React.createElement(ExitIcon, { className: 'h-6 w-6 text-gray-800 dark:text-gray-200' }))
+// FIX: Add type assertion to fix 'title' property error.
+                    React.createElement('button', { onClick: handleBackToEditor, className: 'px-4 py-2 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600', title: 'Return to the editor' } as React.ComponentProps<'button'>, 'Back to Editor'),
+// FIX: Add type assertion to fix 'title' property error.
+                    React.createElement('button', { onClick: handleDownload, className: 'px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700', title: 'Download the edited PDF' } as React.ComponentProps<'button'>, 'Download PDF'),
+// FIX: Add type assertion to fix 'title' property error.
+                    React.createElement('button', { onClick: onClose, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Exit' } as React.ComponentProps<'button'>, React.createElement(ExitIcon, { className: 'h-6 w-6 text-gray-800 dark:text-gray-200' }))
                 )
             ),
             React.createElement('main', { className: 'flex-1 bg-gray-500' },
@@ -596,34 +629,40 @@ const EditPdfComponent = React.forwardRef<EditPdfComponentRef, {
 
     return React.createElement('div', { className: 'h-screen w-screen flex flex-col bg-gray-200 dark:bg-gray-900 text-gray-800 dark:text-gray-200' },
         React.createElement('header', { className: 'flex items-center justify-between p-2 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm' },
-            React.createElement('input', { type: 'text', value: outputFilename, onChange: e => setOutputFilename(e.target.value), className: 'text-lg font-bold truncate px-2 py-1 rounded bg-transparent focus:bg-gray-100 dark:focus:bg-gray-700 w-1/3' }),
+// FIX: Add type assertion to fix 'title' property error.
+            React.createElement('input', { type: 'text', value: outputFilename, onChange: e => setOutputFilename(e.target.value), className: 'text-lg font-bold truncate px-2 py-1 rounded bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 w-1/3 border border-transparent focus:border-gray-300 dark:focus:border-gray-600 transition', title: 'Click to edit the output filename' } as React.ComponentProps<'input'>),
             React.createElement('div', { className: 'flex items-center gap-2' },
-                React.createElement('button', { onClick: undo, disabled: !historyState.canUndo, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed', title: 'Undo' } as React.ComponentProps<'button'>, React.createElement(UndoIcon, { className: 'h-6 w-6' })),
-                React.createElement('button', { onClick: redo, disabled: !historyState.canRedo, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed', title: 'Redo' } as React.ComponentProps<'button'>, React.createElement(RedoIcon, { className: 'h-6 w-6' })),
+                React.createElement('button', { onClick: undo, disabled: !historyState.canUndo, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed', title: 'Undo (Ctrl+Z)' } as React.ComponentProps<'button'>, React.createElement(UndoIcon, { className: 'h-6 w-6' })),
+                React.createElement('button', { onClick: redo, disabled: !historyState.canRedo, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed', title: 'Redo (Ctrl+Y)' } as React.ComponentProps<'button'>, React.createElement(RedoIcon, { className: 'h-6 w-6' })),
                 React.createElement('div', { className: 'w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1' }),
-                React.createElement('button', { onClick: () => handleZoom(zoom * 0.8), className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Zoom Out' }, React.createElement(ZoomOutIcon, { className: 'h-6 w-6' })),
-                React.createElement('span', { className: 'w-12 text-center' }, `${Math.round(zoom * 100)}%`),
-                React.createElement('button', { onClick: () => handleZoom(zoom * 1.25), className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Zoom In' }, React.createElement(ZoomInIcon, { className: 'h-6 w-6' })),
+// FIX: Add type assertion to fix 'title' property error.
+                React.createElement('button', { onClick: () => handleZoom(zoom * 0.8), className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Zoom Out' } as React.ComponentProps<'button'>, React.createElement(ZoomOutIcon, { className: 'h-6 w-6' })),
+                React.createElement('span', { className: 'w-12 text-center font-mono' }, `${Math.round(zoom * 100)}%`),
+// FIX: Add type assertion to fix 'title' property error.
+                React.createElement('button', { onClick: () => handleZoom(zoom * 1.25), className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Zoom In' } as React.ComponentProps<'button'>, React.createElement(ZoomInIcon, { className: 'h-6 w-6' })),
                 React.createElement('div', { className: 'w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1' }),
-                React.createElement('button', { onClick: handleGeneratePreview, className: 'px-4 py-2 bg-primary-red text-white font-bold rounded-lg hover:bg-red-700' }, 'Done'),
-                React.createElement('button', { onClick: onClose, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Exit Editor' }, React.createElement(ExitIcon, { className: 'h-6 w-6' }))
+// FIX: Add type assertion to fix 'title' property error.
+                React.createElement('button', { onClick: handleGeneratePreview, className: 'px-4 py-2 bg-primary-red text-white font-bold rounded-lg hover:bg-red-700', title: 'Finalize and Preview PDF' } as React.ComponentProps<'button'>, 'Done'),
+// FIX: Add type assertion to fix 'title' property error.
+                React.createElement('button', { onClick: onClose, className: 'p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700', title: 'Exit Editor' } as React.ComponentProps<'button'>, React.createElement(ExitIcon, { className: 'h-6 w-6' }))
             )
         ),
         React.createElement('div', { className: 'flex-1 flex overflow-hidden' },
             React.createElement('aside', { className: 'w-48 bg-gray-100 dark:bg-gray-800 p-2 overflow-y-auto border-r dark:border-gray-700' },
-                thumbnails.map((thumb, index) => React.createElement('div', { key: index, onClick: () => goToPage(index + 1), className: `cursor-pointer p-1 mb-2 rounded border-2 ${currentPage === index + 1 ? 'border-primary-red' : 'border-transparent hover:border-gray-400'}` },
+// FIX: Add type assertion to fix 'title' property error.
+                thumbnails.map((thumb, index) => React.createElement('div', { key: index, onClick: () => goToPage(index + 1), className: `cursor-pointer p-1 mb-2 rounded border-2 ${currentPage === index + 1 ? 'border-primary-red' : 'border-transparent hover:border-gray-400'}`, title: `Go to page ${index + 1}` } as React.ComponentProps<'div'>,
                     React.createElement('img', { src: thumb, alt: `Page ${index + 1}`, className: 'w-full shadow-md' }),
                     React.createElement('p', {className: 'text-center text-xs mt-1'}, `Page ${index + 1}`)
                 ))
             ),
             React.createElement('main', { className: 'flex-1 flex flex-col' },
                 React.createElement('div', { className: 'flex flex-wrap items-center gap-1 p-2 border-b dark:border-gray-700 bg-white dark:bg-gray-800' },
-                    React.createElement(ToolButton, { tool: 'select', Icon: PointerIcon, label: 'Select' }),
+                    React.createElement(ToolButton, { tool: 'select', Icon: PointerIcon, label: 'Select Tool' }),
                     React.createElement(ToolButton, { tool: 'text', Icon: TypeIcon, label: 'Add Text' }),
-                    React.createElement(ToolButton, { tool: 'draw', Icon: PencilIcon, label: 'Draw' }),
+                    React.createElement(ToolButton, { tool: 'draw', Icon: PencilIcon, label: 'Draw (Pencil)' }),
                     React.createElement(ToolButton, { tool: 'eraser', Icon: EraserIcon, label: 'Eraser' }),
                     React.createElement(ToolButton, { tool: 'rect', Icon: RectangleIcon, label: 'Add Rectangle' }),
-                    React.createElement(ToolButton, { tool: 'circle', Icon: CircleIcon, label: 'Add Circle' }),
+                    React.createElement(ToolButton, { tool: 'circle', Icon: CircleIcon, label: 'Add Circle/Ellipse' }),
                     React.createElement(ToolButton, { tool: 'line', Icon: LineIcon, label: 'Add Line' }),
                     isTextSelected ? React.createElement(TextToolbar, null) : React.createElement(ShapeToolbar, null)
                 ),
@@ -666,6 +705,8 @@ const toolImplementationsList: Omit<Tool, 'id'>[] = [
                 { value: '300', label: 'X-Large (approx. 300 KB)' },
             ];
 
+            const radioClassName = 'h-4 w-4 text-primary-red border-gray-400 dark:border-gray-500 bg-gray-100 dark:bg-gray-700 focus:ring-primary-red focus:ring-offset-2 dark:focus:ring-offset-gray-800';
+
             const sizeOptions = sizes.map(size =>
                 React.createElement('label', { key: size.value, className: 'flex items-center p-3 border rounded-lg cursor-pointer dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50' },
                     React.createElement('input', {
@@ -674,7 +715,7 @@ const toolImplementationsList: Omit<Tool, 'id'>[] = [
                         value: size.value,
                         checked: selectedSize === size.value,
                         onChange: handleSizeChange,
-                        className: 'h-4 w-4 text-primary-red border-gray-300 focus:ring-primary-red'
+                        className: radioClassName
                     }),
                     React.createElement('span', { className: 'ml-3 text-sm font-medium text-gray-900 dark:text-white' }, size.label)
                 )
@@ -688,7 +729,7 @@ const toolImplementationsList: Omit<Tool, 'id'>[] = [
                         value: 'custom',
                         checked: selectedSize === 'custom',
                         onChange: handleSizeChange,
-                        className: 'h-4 w-4 text-primary-red border-gray-300 focus:ring-primary-red'
+                        className: radioClassName
                     }),
                     React.createElement('span', { className: 'ml-3 text-sm font-medium text-gray-900 dark:text-white' }, 'Custom Size')
                 ),
@@ -741,457 +782,342 @@ const toolImplementationsList: Omit<Tool, 'id'>[] = [
             
             const createPdfFromCanvases = async (quality: number) => {
                 const { PDFDocument } = PDFLib;
-                const newPdfDoc = await PDFDocument.create();
-
-                for (const canvas of pageCanvases) {
-                    const jpegBytes = await new Promise<Uint8Array>((resolve, reject) => {
-                        canvas.toBlob((blob) => {
-                            if(!blob) return reject(new Error('Canvas toBlob failed'));
-                            const reader = new FileReader();
-                            reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
-                            reader.onerror = reject;
-                            reader.readAsArrayBuffer(blob);
-                        }, 'image/jpeg', quality);
+                const pdfDoc = await PDFDocument.create();
+                for (let i = 0; i < pageCanvases.length; i++) {
+                    if(showLoader) showLoader(`Compressing page ${i+1}/${pdf.numPages}...`);
+                    const canvas = pageCanvases[i];
+                    const page = pdfDoc.addPage([canvas.width, canvas.height]);
+                    const jpgUrl = canvas.toDataURL('image/jpeg', quality);
+                    const jpgImageBytes = await fetch(jpgUrl).then(res => res.arrayBuffer());
+                    const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
+                    page.drawImage(jpgImage, {
+                        x: 0,
+                        y: 0,
+                        width: canvas.width,
+                        height: canvas.height,
                     });
-                    const image = await newPdfDoc.embedJpg(jpegBytes);
-                    const newPage = newPdfDoc.addPage([canvas.width, canvas.height]);
-                    newPage.drawImage(image, { x: 0, y: 0, width: canvas.width, height: canvas.height });
                 }
-                return await newPdfDoc.save();
+                return await pdfDoc.save();
             };
 
-            let lowerBound = 0.01;
-            let upperBound = 1.0;
+            let high = 1.0;
+            let low = 0.0;
             let bestPdfBytes: Uint8Array | null = null;
             
-            const maxIterations = 8;
-            for (let i = 0; i < maxIterations; i++) {
-                const midQuality = (lowerBound + upperBound) / 2;
-                if (showLoader) showLoader(`Optimizing... (Pass ${i + 1}/${maxIterations}, Quality: ${midQuality.toFixed(2)})`);
-                
-                const currentPdfBytes = await createPdfFromCanvases(midQuality);
-                
-                if (currentPdfBytes.length <= targetBytes) {
-                    bestPdfBytes = currentPdfBytes;
-                    lowerBound = midQuality; 
+            if(showLoader) showLoader('Finding optimal compression level...');
+
+            // Binary search for the best quality setting
+            for (let i = 0; i < 10; i++) {
+                const mid = (high + low) / 2;
+                const pdfBytes = await createPdfFromCanvases(mid);
+                if (pdfBytes.length <= targetBytes) {
+                    bestPdfBytes = pdfBytes;
+                    low = mid; 
                 } else {
-                    upperBound = midQuality;
+                    high = mid;
                 }
             }
-            
-            if (showLoader) showLoader(`Finalizing compression...`);
-            const finalPdfBytes = await createPdfFromCanvases(lowerBound);
-             if (finalPdfBytes.length <= targetBytes) {
-                bestPdfBytes = finalPdfBytes;
-            }
 
-            if (bestPdfBytes) {
-                createDownload(bestPdfBytes, `${file.name.replace(/\.pdf$/i, '')}_compressed.pdf`);
-            } else {
-                throw new Error("Could not compress the file to the target size. Try a larger target size.");
-            }
-        },
-    },
-    {
-        title: 'Image to PDF',
-        description: 'Convert images to a size-optimized PDF.',
-        icon: JpgIcon,
-        fileType: 'image/*',
-        multipleFiles: true,
-        optionsComponent: React.forwardRef(({ options, setOptions }: { options: any, setOptions: (o: any) => void }, _ref) => {
-            const selectedSize = options.targetSize || '100'; // Default to 100kb
-            const customSize = options.customSize || '';
-
-            const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                if (value === 'custom') {
-                    setOptions({ ...options, targetSize: 'custom' });
-                } else {
-                    setOptions({ ...options, targetSize: value, customSize: '' });
-                }
-            };
-
-            const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-                setOptions({ ...options, customSize: e.target.value });
-            };
-
-            const sizes = [
-                { value: '50', label: 'Small (approx. 50 KB)' },
-                { value: '100', label: 'Medium (approx. 100 KB)' },
-                { value: '200', label: 'Large (approx. 200 KB)' },
-                { value: '300', label: 'X-Large (approx. 300 KB)' },
-            ];
-
-            const sizeOptions = sizes.map(size =>
-                React.createElement('label', { key: size.value, className: 'flex items-center p-3 border rounded-lg cursor-pointer dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50' },
-                    React.createElement('input', {
-                        type: 'radio',
-                        name: 'compression-size',
-                        value: size.value,
-                        checked: selectedSize === size.value,
-                        onChange: handleSizeChange,
-                        className: 'h-4 w-4 text-primary-red border-gray-300 focus:ring-primary-red'
-                    }),
-                    React.createElement('span', { className: 'ml-3 text-sm font-medium text-gray-900 dark:text-white' }, size.label)
-                )
-            );
-
-            const customOption = React.createElement('div', { className: 'p-3 border rounded-lg dark:border-gray-600' },
-                React.createElement('label', { className: 'flex items-center cursor-pointer' },
-                    React.createElement('input', {
-                        type: 'radio',
-                        name: 'compression-size',
-                        value: 'custom',
-                        checked: selectedSize === 'custom',
-                        onChange: handleSizeChange,
-                        className: 'h-4 w-4 text-primary-red border-gray-300 focus:ring-primary-red'
-                    }),
-                    React.createElement('span', { className: 'ml-3 text-sm font-medium text-gray-900 dark:text-white' }, 'Custom Size')
-                ),
-                selectedSize === 'custom' && React.createElement('div', { className: 'mt-3 flex items-center' },
-                    React.createElement('input', {
-                        type: 'number',
-                        placeholder: 'e.g., 250',
-                        value: customSize,
-                        onChange: handleCustomInputChange,
-                        className: 'w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600'
-                    }),
-                    React.createElement('span', { className: 'ml-2 text-sm text-gray-500 dark:text-gray-400' }, 'KB')
-                )
-            );
-
-            return React.createElement('div', { className: 'space-y-3' }, ...sizeOptions, customOption);
-        }),
-        process: async (files, { targetSize = '100', customSize, showLoader }) => {
-            const { PDFDocument } = PDFLib;
-
-            const targetBytes = (targetSize === 'custom' ? parseInt(customSize, 10) : parseInt(targetSize, 10)) * 1024;
-            if (isNaN(targetBytes) || targetBytes <= 0) {
-                throw new Error("Invalid target size specified.");
-            }
-
-            const imageCanvases: HTMLCanvasElement[] = [];
-            let imageIndex = 0;
-            for (const file of files) {
-                if (showLoader) showLoader(`Preparing image ${++imageIndex}/${files.length}...`);
-                const imageBitmap = await createImageBitmap(file);
-                const canvas = document.createElement('canvas');
-                canvas.width = imageBitmap.width;
-                canvas.height = imageBitmap.height;
-                const ctx = canvas.getContext('2d');
-                if (!ctx) throw new Error('Could not get canvas context');
-                
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(imageBitmap, 0, 0);
-                imageCanvases.push(canvas);
+            if (!bestPdfBytes) {
+                // If even lowest quality is too big, use the lowest.
+                bestPdfBytes = await createPdfFromCanvases(0.1);
             }
             
-            const createPdfFromCanvases = async (quality: number) => {
-                const newPdfDoc = await PDFDocument.create();
-                for (const canvas of imageCanvases) {
-                    const jpegBytes = await new Promise<Uint8Array>((resolve, reject) => {
-                        canvas.toBlob((blob) => {
-                            if(!blob) return reject(new Error('Canvas toBlob failed'));
-                            const reader = new FileReader();
-                            reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
-                            reader.onerror = reject;
-                            reader.readAsArrayBuffer(blob);
-                        }, 'image/jpeg', quality);
-                    });
-                    const image = await newPdfDoc.embedJpg(jpegBytes);
-                    const newPage = newPdfDoc.addPage([canvas.width, canvas.height]);
-                    newPage.drawImage(image, { x: 0, y: 0, width: canvas.width, height: canvas.height });
-                }
-                return await newPdfDoc.save();
-            };
+            const finalSize = (bestPdfBytes.length / 1024).toFixed(2);
+            if(showLoader) showLoader(`Compression complete! Final size: ${finalSize} KB`);
 
-            let lowerBound = 0.01;
-            let upperBound = 1.0;
-            let bestPdfBytes: Uint8Array | null = null;
-            
-            const maxIterations = 8;
-            for (let i = 0; i < maxIterations; i++) {
-                const midQuality = (lowerBound + upperBound) / 2;
-                if (showLoader) showLoader(`Optimizing... (Pass ${i + 1}/${maxIterations}, Quality: ${midQuality.toFixed(2)})`);
-                
-                const currentPdfBytes = await createPdfFromCanvases(midQuality);
-                
-                if (currentPdfBytes.length <= targetBytes) {
-                    bestPdfBytes = currentPdfBytes;
-                    lowerBound = midQuality; 
-                } else {
-                    upperBound = midQuality;
-                }
-            }
-            
-            if (showLoader) showLoader(`Finalizing compression...`);
-            const finalPdfBytes = await createPdfFromCanvases(lowerBound);
-             if (finalPdfBytes.length <= targetBytes) {
-                bestPdfBytes = finalPdfBytes;
-            }
-
-            if (bestPdfBytes) {
-                createDownload(bestPdfBytes, `images-to-pdf_compressed.pdf`);
-            } else {
-                throw new Error("Could not compress the file to the target size. Try a larger target size.");
-            }
-        },
-    },
-    {
-        title: 'Edit PDF',
-        description: 'Add text, shapes, and drawings to your PDF document.',
-        icon: EditIcon,
-        fileType: 'application/pdf',
-        multipleFiles: false,
-        new: true,
-        optionsComponent: EditPdfComponent,
-        process: async () => {
-            // This process is now handled entirely inside the EditPdfComponent.
-            // This function is a placeholder to satisfy the Tool type.
-            return Promise.resolve();
+            createDownload(bestPdfBytes, `${file.name.replace(/\.pdf$/i, '')}_compressed.pdf`);
         },
     },
     {
         title: 'Merge PDF',
-        description: 'Combine multiple PDFs into one single document.',
+        description: 'Combine multiple PDFs into one unified document.',
         icon: MergeIcon,
         fileType: 'application/pdf',
         multipleFiles: true,
-        process: async (files) => {
+        process: async (files, { showLoader }) => {
             const { PDFDocument } = PDFLib;
             const mergedPdf = await PDFDocument.create();
-            for (const file of files) {
+            for (const [index, file] of files.entries()) {
+                if (showLoader) showLoader(`Merging file ${index + 1}/${files.length}: ${file.name}`);
                 const pdfBytes = await file.arrayBuffer();
-                const pdfDoc = await PDFDocument.load(pdfBytes);
-                const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+                const pdf = await PDFDocument.load(pdfBytes);
+                const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
                 copiedPages.forEach((page) => mergedPdf.addPage(page));
             }
+            if (showLoader) showLoader('Finalizing merged PDF...');
             const mergedPdfBytes = await mergedPdf.save();
             createDownload(mergedPdfBytes, 'merged.pdf');
         },
     },
     {
         title: 'Split PDF',
-        description: 'Extract a range of pages from a PDF file.',
+        description: 'Extract specific pages or page ranges from a PDF file.',
         icon: SplitIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
-        optionsComponent: React.forwardRef(({ options, setOptions }: { options: any, setOptions: (o: any) => void }, _ref) => {
-            return React.createElement('input', {
-                type: "text",
-                placeholder: "e.g., 1-3, 5, 7-9",
-                className: "w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600",
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) => setOptions({ ...options, range: e.target.value })
-            });
-        }),
-        process: async (files, options) => {
-            const file = files[0];
-            const { range } = options;
-            if (!range) throw new Error('Page range is required.');
-
-            const { PDFDocument } = PDFLib;
-            const pdfBytes = await file.arrayBuffer();
-            const pdfDoc = await PDFDocument.load(pdfBytes);
-            const newDoc = await PDFDocument.create();
-
-            const indices = new Set<number>();
-            range.split(',').forEach((part: string) => {
-                if (part.includes('-')) {
-                    const [start, end] = part.split('-').map(Number);
-                    for (let i = start; i <= end; i++) {
-                        indices.add(i - 1);
-                    }
-                } else {
-                    indices.add(Number(part) - 1);
-                }
-            });
-
-            const validIndices = Array.from(indices).filter(i => i >= 0 && i < pdfDoc.getPageCount());
-            const copiedPages = await newDoc.copyPages(pdfDoc, validIndices);
-            copiedPages.forEach(page => newDoc.addPage(page));
-
-            const newPdfBytes = await newDoc.save();
-            createDownload(newPdfBytes, 'split.pdf');
-        },
+        process: placeholderProcess('Split PDF'),
     },
     {
         title: 'PDF to Word',
-        description: 'Convert your PDF to an editable Word document (as .txt).',
+        description: 'Convert PDF files to editable Word documents.',
         icon: WordIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
+        process: placeholderProcess('PDF to Word'),
+    },
+    {
+        title: 'Word to PDF',
+        description: 'Convert Word documents to PDF format.',
+        icon: WordIcon,
+        fileType: '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        multipleFiles: false,
         process: async (files, { showLoader }) => {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
+            if (showLoader) showLoader('Converting Word to HTML...');
             const file = files[0];
-            const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
-            let textContent = '';
-            for (let i = 1; i <= pdf.numPages; i++) {
-                if(showLoader) showLoader(`Extracting text from page ${i}/${pdf.numPages}...`);
-                const page = await pdf.getPage(i);
-                const text = await page.getTextContent();
-                textContent += text.items.map((s: any) => s.str).join(' ') + '\n\n';
-            }
-            const blob = new Blob([textContent], { type: 'text/plain' });
-            createDownload(blob, `${file.name.replace('.pdf', '')}.txt`);
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.convertToHtml({ arrayBuffer });
+            const html = result.value;
+
+            if (showLoader) showLoader('Converting HTML to PDF...');
+            const element = document.createElement('div');
+            element.innerHTML = html;
+            // Basic styling to make it look like a document
+            element.style.padding = '2cm';
+            element.style.lineHeight = '1.5';
+            element.style.fontFamily = 'Times New Roman, serif';
+            element.style.fontSize = '12pt';
+
+            document.body.appendChild(element);
+
+            await html2pdf().from(element).set({
+                margin: 1,
+                filename: `${file.name.replace(/\.(docx|doc)$/i, '')}.pdf`,
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).save();
+            
+            document.body.removeChild(element);
         },
     },
     {
         title: 'PDF to PowerPoint',
-        description: 'Convert each page of a PDF into a PowerPoint slide.',
+        description: 'Convert PDFs into editable PowerPoint presentations.',
         icon: PptIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
-        process: async (files, {showLoader}) => {
-             pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
-             const file = files[0];
-             const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
-             const pptx = new PptxGenJS();
-             
-             for (let i = 1; i <= pdf.numPages; i++) {
-                if(showLoader) showLoader(`Converting page ${i}/${pdf.numPages} to slide...`);
-                const page = await pdf.getPage(i);
-                const viewport = page.getViewport({ scale: 1.5 });
-                const canvas = document.createElement('canvas');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                const context = canvas.getContext('2d');
-                if(!context) throw new Error("Could not get canvas context");
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
-                const dataUrl = canvas.toDataURL('image/png');
-                const slide = pptx.addSlide();
-                slide.addImage({ data: dataUrl, x: 0, y: 0, w: '100%', h: '100%' });
-             }
-             
-             const pptxBlob = await pptx.write('blob');
-             createDownload(pptxBlob, 'converted.pptx');
-        }
+        process: placeholderProcess('PDF to PowerPoint'),
+    },
+    {
+        title: 'PowerPoint to PDF',
+        description: 'Convert PowerPoint presentations to PDF.',
+        icon: PptIcon,
+        fileType: '.ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        multipleFiles: false,
+        process: async (files, { showLoader }) => {
+            alert('PowerPoint to PDF conversion is complex and has limited support. Images and text will be extracted, but layout may differ significantly.');
+            const file = files[0];
+            const pptx = new PptxGenJS();
+            if (showLoader) showLoader('Loading PowerPoint file...');
+            await pptx.load(file);
+            if (showLoader) showLoader('Saving as PDF...');
+            await pptx.save({
+                fileName: `${file.name.replace(/\.(pptx|ppt)$/i, '')}`,
+                format: 'pdf',
+            });
+        },
     },
     {
         title: 'PDF to Excel',
-        description: 'Extract data from PDF tables into Excel sheets.',
+        description: 'Extract data from PDFs into Excel spreadsheets.',
         icon: ExcelIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
         process: placeholderProcess('PDF to Excel'),
     },
     {
-        title: 'Word to PDF',
-        description: 'Convert a .docx file to a high-quality PDF.',
-        icon: WordIcon,
-        fileType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        multipleFiles: false,
-        process: async (files) => {
-            const file = files[0];
-            const arrayBuffer = await file.arrayBuffer();
-            const { value } = await mammoth.convertToHtml({ arrayBuffer });
-            const element = document.createElement('div');
-            element.innerHTML = value;
-            html2pdf().from(element).save('word.pdf');
-        }
-    },
-    {
-        title: 'PowerPoint to PDF',
-        description: 'Convert your presentation into a PDF document.',
-        icon: PptIcon,
-        fileType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        multipleFiles: false,
-        process: placeholderProcess('PowerPoint to PDF'),
-    },
-    {
         title: 'Excel to PDF',
-        description: 'Turn your spreadsheets into easily shareable PDFs.',
+        description: 'Convert Excel spreadsheets to PDF documents.',
         icon: ExcelIcon,
-        fileType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        fileType: '.xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         multipleFiles: false,
-        process: placeholderProcess('Excel to PDF'),
+        process: async (files, { showLoader }) => {
+            showLoader?.('This is a basic conversion. For complex layouts, formatting may be lost.');
+            const file = files[0];
+            showLoader?.('Reading Excel file...');
+            const data = await file.arrayBuffer();
+            const workbook = XLSX.read(data, {type: 'array'});
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            showLoader?.('Converting spreadsheet to HTML...');
+            const html = XLSX.utils.sheet_to_html(worksheet);
+            
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <style>
+                    table { border-collapse: collapse; width: 100%; font-family: sans-serif; }
+                    th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
+                    th { background-color: #f2f2f2; }
+                </style>
+                ${html}
+            `;
+            
+            document.body.appendChild(element);
+            
+            showLoader?.('Generating PDF from HTML...');
+            await html2pdf().from(element).set({
+                margin: 0.5,
+                filename: `${file.name.replace(/\.(xlsx|xls)$/i, '')}.pdf`,
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+            }).save();
+            
+            document.body.removeChild(element);
+        },
+    },
+    {
+        title: 'Edit PDF',
+        description: 'Add text, shapes, and drawings to a PDF file.',
+        icon: EditIcon,
+        fileType: 'application/pdf',
+        multipleFiles: false,
+        new: true,
+        optionsComponent: EditPdfComponent,
+        process: async (files, options) => {
+            const { showLoader } = options;
+            const { PDFDocument } = PDFLib;
+            const file = files[0];
+            if (showLoader) showLoader('Loading original PDF...');
+            const existingPdfBytes = await file.arrayBuffer();
+            const pdfDoc = await PDFDocument.load(existingPdfBytes);
+            
+            const fabricStates = options.fabricStates;
+            const outputFilename = options.outputFilename || 'edited.pdf';
+            const tempCanvas = new fabric.StaticCanvas(null, { width: 1, height: 1 });
+            const pages = pdfDoc.getPages();
+            
+            for (let i = 0; i < pages.length; i++) {
+                const pageNum = i + 1;
+                if (fabricStates[pageNum]) {
+                    if (showLoader) showLoader(`Applying edits to page ${pageNum}/${pages.length}...`);
+                    const page = pages[i];
+                    const { width, height } = page.getSize();
+                    tempCanvas.setDimensions({ width, height });
+                    
+                    const pageState = { ...fabricStates[pageNum] };
+                    pageState.backgroundImage = null;
+                    
+                    await new Promise<void>(resolve => tempCanvas.loadFromJSON(pageState, () => {
+                        tempCanvas.renderAll();
+                        resolve();
+                    }));
+                    
+                    const dataUrl = tempCanvas.toDataURL({ format: 'png' });
+                    const pngImage = await pdfDoc.embedPng(dataUrl);
+                    page.drawImage(pngImage, { x: 0, y: 0, width, height });
+                }
+            }
+            
+            tempCanvas.dispose();
+            if (showLoader) showLoader('Saving final PDF...');
+            const pdfBytes = await pdfDoc.save();
+            createDownload(pdfBytes, outputFilename);
+        },
     },
     {
         title: 'PDF to JPG',
-        description: 'Convert each page of a PDF into a high-quality JPG image.',
+        description: 'Convert each page of a PDF to a high-quality JPG image.',
         icon: JpgIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
         process: async (files, { showLoader }) => {
             pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
             const file = files[0];
-            const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
-            const zip = new JSZip();
-
-            for (let i = 1; i <= pdf.numPages; i++) {
-                if(showLoader) showLoader(`Converting page ${i}/${pdf.numPages} to JPG...`);
-                const page = await pdf.getPage(i);
+            const pdfData = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(pdfData).promise;
+            
+            if (pdf.numPages === 1) {
+                if (showLoader) showLoader('Converting page 1/1...');
+                const page = await pdf.getPage(1);
                 const viewport = page.getViewport({ scale: 2.0 });
                 const canvas = document.createElement('canvas');
-                canvas.height = viewport.height;
                 canvas.width = viewport.width;
+                canvas.height = viewport.height;
                 const context = canvas.getContext('2d');
-                if(!context) throw new Error("Could not get canvas context");
+                if(!context) return;
                 await page.render({ canvasContext: context, viewport: viewport }).promise;
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
-                if(blob) zip.file(`page_${i}.jpg`, blob);
+                canvas.toBlob(blob => {
+                    if (blob) createDownload(blob, `${file.name.replace('.pdf', '')}.jpg`);
+                }, 'image/jpeg', 0.95);
+            } else {
+                const zip = new JSZip();
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    if (showLoader) showLoader(`Converting page ${i}/${pdf.numPages}...`);
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 2.0 });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    const context = canvas.getContext('2d');
+                    if(!context) continue;
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                    if (blob) {
+                        zip.file(`${file.name.replace('.pdf', '')}_page_${i}.jpg`, blob);
+                    }
+                }
+                if (showLoader) showLoader('Zipping images...');
+                const content = await zip.generateAsync({ type: "blob" });
+                createDownload(content, `${file.name.replace('.pdf', '')}.zip`);
             }
+        },
+    },
+    {
+        title: 'JPG to PDF',
+        description: 'Convert JPG, PNG, and other image formats to PDF.',
+        icon: JpgIcon,
+        fileType: 'image/*',
+        multipleFiles: true,
+        process: async (files, { showLoader }) => {
+            const { PDFDocument } = PDFLib;
+            const pdfDoc = await PDFDocument.create();
 
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            createDownload(zipBlob, 'pdf_to_jpg.zip');
+            for (let i = 0; i < files.length; i++) {
+                if (showLoader) showLoader(`Adding image ${i+1}/${files.length}...`);
+                const file = files[i];
+                const imageBytes = await file.arrayBuffer();
+                let image;
+                if (file.type === 'image/jpeg') {
+                    image = await pdfDoc.embedJpg(imageBytes);
+                } else if (file.type === 'image/png') {
+                    image = await pdfDoc.embedPng(imageBytes);
+                } else {
+                    console.warn(`Unsupported image type: ${file.type}. Skipping.`);
+                    continue;
+                }
+                
+                const page = pdfDoc.addPage([image.width, image.height]);
+                page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+            }
+            
+            if (showLoader) showLoader('Finalizing PDF...');
+            const pdfBytes = await pdfDoc.save();
+            createDownload(pdfBytes, 'images_converted.pdf');
         },
     },
     {
         title: 'Sign PDF',
-        description: 'Create your signature and sign your PDF documents.',
+        description: 'Add your signature to a PDF document securely.',
         icon: SignIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
         process: placeholderProcess('Sign PDF'),
     },
     {
-        title: 'Watermark',
-        description: 'Add a text or image watermark to your PDF.',
+        title: 'Watermark PDF',
+        description: 'Stamp an image or text over your PDF in seconds.',
         icon: WatermarkIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
-        optionsComponent: React.forwardRef(({ options, setOptions }: { options: any, setOptions: (o: any) => void }, _ref) => {
-            return React.createElement('div', { className: "space-y-2" },
-                React.createElement('input', {
-                    type: "text",
-                    placeholder: "Watermark Text",
-                    className: "w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600",
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setOptions({ ...options, text: e.target.value })
-                }),
-                React.createElement('input', {
-                    type: "range",
-                    min: "0.1",
-                    max: "1.0",
-                    step: "0.1",
-                    defaultValue: "0.5",
-                    className: "w-full",
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setOptions({ ...options, opacity: parseFloat(e.target.value) })
-                })
-            );
-        }),
-        process: async (files, options) => {
-            const { text = 'CONFIDENTIAL', opacity = 0.5 } = options;
-            const file = files[0];
-            const { PDFDocument, rgb, degrees } = PDFLib;
-            const existingPdfBytes = await file.arrayBuffer();
-            const pdfDoc = await PDFDocument.load(existingPdfBytes);
-            const pages = pdfDoc.getPages();
-
-            for (const page of pages) {
-                const { width, height } = page.getSize();
-                page.drawText(text, {
-                    x: width / 2 - 150,
-                    y: height / 2,
-                    size: 50,
-                    color: rgb(0.5, 0.5, 0.5),
-                    opacity,
-                    rotate: degrees(45),
-                });
-            }
-            
-            const pdfBytes = await pdfDoc.save();
-            createDownload(pdfBytes, 'watermarked.pdf');
-        }
+        process: placeholderProcess('Watermark PDF'),
     },
     {
         title: 'Rotate PDF',
@@ -1199,114 +1125,151 @@ const toolImplementationsList: Omit<Tool, 'id'>[] = [
         icon: RotateIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
-        optionsComponent: React.forwardRef(({ options, setOptions }: { options: any, setOptions: (o: any) => void }, _ref) => {
-            // FIX: The use of .map() with React.createElement was causing a TypeScript type inference error on the `value` prop for <option> tags.
-            // Unrolling the map into explicit calls for each option resolves this compilation issue.
-            return React.createElement('select', {
-                    className: "w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600",
-                    value: options.angle?.toString() || '90',
-                    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setOptions({ ...options, angle: parseInt(e.target.value, 10) })
-                },
-// FIX: Add key prop to <option> elements to resolve TypeScript type inference error.
-                React.createElement('option', { value: '90', key: '90' }, "90° clockwise"),
-                React.createElement('option', { value: '180', key: '180' }, "180°"),
-                React.createElement('option', { value: '270', key: '270' }, "270° clockwise")
-            );
-        }),
-        process: async (files, options) => {
-            const { angle = 90 } = options;
-            const file = files[0];
-            const { PDFDocument, RotationTypes } = PDFLib;
-            const existingPdfBytes = await file.arrayBuffer();
-            const pdfDoc = await PDFDocument.load(existingPdfBytes);
-            
-            const pages = pdfDoc.getPages();
-            pages.forEach(page => {
-                 const currentRotation = page.getRotation().angle;
-                 page.setRotation({ type: RotationTypes.Degrees, angle: currentRotation + angle });
-            });
-            
-            const pdfBytes = await pdfDoc.save();
-            createDownload(pdfBytes, 'rotated.pdf');
-        }
+        process: placeholderProcess('Rotate PDF'),
     },
     {
         title: 'HTML to PDF',
-        description: 'Convert webpages to PDF. (Accepts .html files)',
+        description: 'Convert web pages to PDF documents.',
         icon: HtmlIcon,
-        fileType: 'text/html',
+        fileType: '.html,.htm,text/html',
         multipleFiles: false,
-        process: async (files) => {
+        process: async (files, { showLoader }) => {
             const file = files[0];
+            if (showLoader) showLoader('Reading HTML file...');
             const htmlContent = await file.text();
             const element = document.createElement('div');
             element.innerHTML = htmlContent;
-            html2pdf().from(element).save('html.pdf');
+            document.body.appendChild(element);
+            if (showLoader) showLoader('Generating PDF from HTML...');
+            await html2pdf().from(element).set({
+                filename: `${file.name.replace(/\.(html|htm)$/i, '')}.pdf`,
+            }).save();
+            document.body.removeChild(element);
         },
     },
     {
         title: 'Unlock PDF',
-        description: 'Remove passwords and restrictions from your PDF.',
+        description: 'Remove passwords and restrictions from your PDFs.',
         icon: UnlockIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
-        process: placeholderProcess('Unlock PDF'),
+        process: async (files, { showLoader }) => {
+            const file = files[0];
+            const password = prompt("Enter the password for the PDF file:");
+            if (!password) {
+                alert("Password is required to unlock the PDF.");
+                return;
+            }
+            try {
+                if (showLoader) showLoader('Attempting to decrypt PDF...');
+                const { PDFDocument } = PDFLib;
+                const existingPdfBytes = await file.arrayBuffer();
+                const pdfDoc = await PDFDocument.load(existingPdfBytes, {
+                    password: password,
+                    ignoreEncryption: false
+                });
+                if (showLoader) showLoader('Saving unlocked PDF...');
+                const pdfBytes = await pdfDoc.save();
+                createDownload(pdfBytes, `${file.name.replace(/\.pdf$/i, '')}_unlocked.pdf`);
+            } catch (error) {
+                alert("Failed to unlock PDF. The password may be incorrect or the encryption algorithm is not supported.");
+                console.error(error);
+            }
+        },
     },
     {
         title: 'Protect PDF',
-        description: 'Add a password to protect your PDF file.',
+        description: 'Add a password and encrypt your PDF file.',
         icon: LockIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
-        process: placeholderProcess('Protect PDF'),
+        process: async (files, { showLoader }) => {
+            const file = files[0];
+            const password = prompt("Enter a password to protect the PDF:");
+            if (!password) {
+                alert("A password is required.");
+                return;
+            }
+            if (showLoader) showLoader('Loading PDF...');
+            const { PDFDocument } = PDFLib;
+            const existingPdfBytes = await file.arrayBuffer();
+            const pdfDoc = await PDFDocument.load(existingPdfBytes);
+            pdfDoc.setProducer('DocxTools Web');
+            pdfDoc.setCreator('DocxTools Web');
+            if (showLoader) showLoader('Encrypting and saving protected PDF...');
+            const pdfBytes = await pdfDoc.save({
+                userPassword: password,
+                ownerPassword: password,
+            });
+            createDownload(pdfBytes, `${file.name.replace(/\.pdf$/i, '')}_protected.pdf`);
+        },
     },
     {
         title: 'Organize PDF',
-        description: 'Reorder, delete, or add pages to a PDF file.',
+        description: 'Reorder, delete, or duplicate pages in your PDF.',
         icon: OrganizeIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
         process: placeholderProcess('Organize PDF'),
     },
     {
-        title: 'PDF to PDF/A',
-        description: 'Convert your PDF to PDF/A for long-term archiving.',
-        icon: DefaultIcon,
-        fileType: 'application/pdf',
-        multipleFiles: false,
-        process: placeholderProcess('PDF to PDF/A'),
-    },
-    {
-        title: 'Repair PDF',
-        description: 'Attempt to recover data from a corrupted PDF.',
-        icon: DefaultIcon,
-        fileType: 'application/pdf',
-        multipleFiles: false,
-        process: placeholderProcess('Repair PDF'),
-    },
-    {
         title: 'Add Page Numbers',
-        description: 'Easily add page numbers to your PDF document.',
+        description: 'Insert page numbers into your PDF file.',
         icon: PageNumberIcon,
         fileType: 'application/pdf',
         multipleFiles: false,
         process: placeholderProcess('Add Page Numbers'),
     },
     {
-        title: 'OCR PDF',
-        description: 'Recognize text in scanned PDFs to make them searchable.',
+        title: 'Scan to PDF (OCR)',
+        description: 'Convert scanned documents into searchable PDFs.',
         icon: OcrIcon,
-        fileType: 'application/pdf',
+        fileType: 'image/*',
         multipleFiles: false,
-        process: placeholderProcess('OCR PDF'),
-    },
-    {
-        title: 'eSign PDF',
-        description: 'Legally binding e-signatures for your documents.',
-        icon: SignIcon,
-        fileType: 'application/pdf',
-        multipleFiles: false,
-        process: placeholderProcess('eSign PDF'),
+        process: async (files, { showLoader }) => {
+            const { PDFDocument, rgb } = PDFLib;
+            const { createWorker } = Tesseract;
+            
+            const file = files[0];
+            const worker = await createWorker();
+            
+            await worker.load();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+
+            const imageData = await file.arrayBuffer();
+            const imageBlob = new Blob([imageData], { type: file.type });
+            const imageUrl = URL.createObjectURL(imageBlob);
+
+            if (showLoader) showLoader('Recognizing text in the image...');
+            const { data: { text, words, confidence } } = await worker.recognize(imageUrl);
+            URL.revokeObjectURL(imageUrl);
+            
+            if (showLoader) showLoader('Creating searchable PDF...');
+            
+            const pdfDoc = await PDFDocument.create();
+            const image = file.type === 'image/png' ? await pdfDoc.embedPng(imageData) : await pdfDoc.embedJpg(imageData);
+            const page = pdfDoc.addPage([image.width, image.height]);
+
+            page.drawImage(image, { x: 0, y: 0 });
+
+            // Add invisible text layer
+            words.forEach(word => {
+                const { x0, y0, x1, y1 } = word.bbox;
+                page.drawText(word.text, {
+                    x: x0,
+                    y: page.getHeight() - y1,
+                    size: y1 - y0, // Approximate font size
+                    color: rgb(1, 1, 1),
+                    opacity: 0, // Make text invisible
+                });
+            });
+            
+            await worker.terminate();
+            
+            const pdfBytes = await pdfDoc.save();
+            createDownload(pdfBytes, `${file.name.split('.')[0]}_ocr.pdf`);
+        },
     },
     {
         title: 'Redact PDF',
@@ -1326,9 +1289,10 @@ const toolImplementationsList: Omit<Tool, 'id'>[] = [
     },
 ];
 
-export const toolImplementations: Record<string, Tool> =
-    toolImplementationsList.reduce((acc, tool, index) => {
-        const id = tool.title.toLowerCase().replace(/\s+/g, '-').replace('/', '-or-');
-        acc[id] = { ...tool, id };
-        return acc;
-    }, {} as Record<string, Tool>);
+const createId = (title: string) => title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+export const toolImplementations = toolImplementationsList.reduce((acc, tool) => {
+    const id = createId(tool.title);
+    acc[id] = { ...tool, id };
+    return acc;
+}, {} as { [id: string]: Tool });

@@ -83,8 +83,14 @@ const Header: React.FC = () => {
                          <a href="#tools-search" onClick={(e) => handleNavClick(e, '#tools')} aria-label="Search for a tool" className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">
                             <SearchIcon className="h-6 w-6" />
                         </a>
-                        <button onClick={toggleTheme} aria-label="Toggle theme" className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">
-                            {theme === 'light' ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
+                        <button 
+                            onClick={toggleTheme} 
+                            aria-label="Toggle theme" 
+                            className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-red dark:focus:ring-offset-gray-800 transition-colors"
+                        >
+                            {theme === 'light' 
+                                ? <MoonIcon key="moon" className="h-6 w-6 fade-in" /> 
+                                : <SunIcon key="sun" className="h-6 w-6 fade-in" />}
                         </button>
                         <div className="md:hidden">
                             <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open menu" className="p-2 rounded-md text-gray-600 dark:text-gray-400">
