@@ -4,58 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocxTools - Free Online PDF Tools</title>
-    <meta name="description" content="Every tool you need to work with PDFs in one place. Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.">
-    <meta name="keywords" content="PDF, tools, merge PDF, split PDF, compress PDF, convert PDF, Word to PDF, PDF to Word, edit PDF, free, online">
+    <title>DocxTools - Free Online PDF & Document Tools</title>
     
-    <!-- Google Search Console Verification (placeholder) -->
-    <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE"> -->
-
+    <!-- SEO & Metadata -->
+    <meta name="description" content="A comprehensive suite of 28+ free online tools for PDF and document management. Merge, split, compress, convert, edit, and sign files directly in your browser. Secure and private.">
+    <meta name="keywords" content="PDF tools, image compressor, merge PDF, split PDF, compress PDF, convert PDF, Word to PDF, PDF to Word, edit PDF, free, online, secure">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="DocxTools - Free Online PDF & Document Tools">
+    <meta property="og:description" content="Your all-in-one solution for document tasks. Secure, free, and works entirely in your browser.">
+    <meta property="og:type" content="website">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
                     colors: {
-                        'primary-red': '#e5322d',
-                        'background-light': '#f8f8fa',
-                        'background-dark': '#1a202c',
-                        'text-light': '#1a202c',
-                        'text-dark': '#e2e8f0',
+                        'primary': '#ef4444', // red-500
+                        'primary-hover': '#dc2626', // red-600
+                        'background-light': '#f9fafb', // gray-50
+                        'background-dark': '#111827', // gray-900
+                        'surface-light': '#ffffff',
+                        'surface-dark': '#1f2937', // gray-800
+                        'text-light': '#111827', // gray-900
+                        'text-dark': '#f9fafb', // gray-50
+                        'text-muted-light': '#6b7280', // gray-500
+                        'text-muted-dark': '#9ca3af', // gray-400
+                        'border-light': '#e5e7eb', // gray-200
+                        'border-dark': '#374151', // gray-700
                     }
                 }
             }
         }
     </script>
+    
+    <!-- Custom Styles -->
     <style>
-        :root {
-            --primary-red: #e5322d;
-            --background-light: #f8f8fa;
-            --background-dark: #1a202c;
-            --text-light: #1a202c;
-            --text-dark: #e2e8f0;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', 'sans-serif'; }
+        
+        /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
+            from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        .fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        .spinner {
-            animation: spin 1s linear infinite;
-        }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .spinner { animation: spin 1s linear infinite; }
+        
+        /* Intersection Observer Animation */
         .reveal {
             opacity: 0;
             transform: translateY(20px);
@@ -66,20 +79,23 @@
             transform: translateY(0);
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "react": "https://aistudiocdn.com/react@^19.1.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/"
-  }
-}
-</script>
+
+    <!-- ES Module Shims for React -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.3.1",
+        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client"
+      }
+    }
+    </script>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans">
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased">
+    
+    <!-- React App Mount Point -->
     <div id="root"></div>
 
-    <!-- External Libraries -->
+    <!-- External Libraries for Tool Functionality -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
     <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -89,18 +105,2275 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
 
-    <!-- Google Analytics (placeholder) -->
-    <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'YOUR_GA_ID');
+    <!-- React App Entry Point -->
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom/client';
+
+      // This will hold all our app's modules to simulate a module system
+      const AppScope = {};
+
+      // --- Start of inlined modules ---
+
+      // === BEGIN components/icons/index.tsx ===
+      ((scope, React) => {
+        scope.createIcon = (path) =>
+          (props) =>
+            React.createElement('svg', {
+              xmlns: "http://www.w3.org/2000/svg",
+              fill: "none",
+              viewBox: "0 0 24 24",
+              strokeWidth: 1.5,
+              stroke: "currentColor",
+              ...props
+            }, path);
+
+        scope.MergeIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M17 8l4 4m0 0l-4 4m4-4H3" }));
+        scope.SplitIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 6v6m0 0v6m0-6h6m-6 0H6" }));
+        scope.CompressIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" }));
+        scope.WordIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 6h16M4 12h16M4 18h7" }));
+        scope.PptIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" }));
+        scope.ExcelIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V9a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 012-2h2a2 2 0 012 2v6a2 2 0 01-2 2z" }));
+        scope.EditIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" }));
+        scope.JpgIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" }));
+        scope.SignIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" }));
+        scope.WatermarkIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" }));
+        scope.RotateIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5" }));
+        scope.HtmlIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" }));
+        scope.LockIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" }));
+        scope.UnlockIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" }));
+        scope.OrganizeIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 6h16M4 10h16M4 14h16M4 18h16" }));
+        scope.PageNumberIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zM10 9h4m-4 4h4m-4 4h2" }));
+        scope.OcrIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 5h12M9 3v2m4 13h4m-4-4h4m-4-4h4M3 21h12a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v12a2 2 0 002 2z" }));
+        scope.RedactIcon = scope.createIcon(React.createElement(React.Fragment, null, React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M15 12a3 3 0 11-6 0 3 3 0 016 0z" }), React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" })));
+        scope.CropIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 2v2h2M4 12h8m-8-5h16v10H4zM20 2v2h-2M20 20v-2h-2M4 20v-2h2" }));
+        scope.SearchIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" }));
+        scope.SunIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" }));
+        scope.MoonIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" }));
+        scope.MenuIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 6h16M4 12h16M4 18h16" }));
+        scope.XIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M6 18L18 6M6 6l12 12" }));
+        scope.UploadIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" }));
+        scope.FileIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" }));
+        scope.TrashIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }));
+        scope.PointerIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" }));
+        scope.TypeIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 7V4h16v3M9 20h6M12 4v16" }));
+        scope.RectangleIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 4h16v16H4z" }));
+        scope.CircleIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 21a9 9 0 110-18 9 9 0 010 18z" }));
+        scope.LineIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 12h18" }));
+        scope.PencilIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21H3v-3.5L15.232 5.232z" }));
+        scope.EraserIcon = scope.createIcon(React.createElement('path', { d: "M18.173 3.327a2.5 2.5 0 0 0-3.536 0L4.22 13.744a2 2 0 0 0-.586 1.414v2.586a1 1 0 0 0 1 1h2.586a2 2 0 0 0 1.414-.586l10.417-10.417a2.5 2.5 0 0 0 0-3.536Zm-5.303 5.303-1.06-1.06 7.07-7.07 1.06 1.06-7.07 7.07ZM3 21h18" }));
+        scope.UndoIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 10h10a8 8 0 018 8v2M3 10l4-4m-4 4l4 4" }));
+        scope.RedoIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M21 10H11a8 8 0 00-8 8v2m18-10l-4-4m4 4l-4 4" }));
+        scope.ZoomInIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3h-6" }));
+        scope.ZoomOutIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" }));
+        scope.ExitIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M17 16l4-4m0 0l-4-4m4 4H7m6-12v16" }));
+        scope.BoldIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M6 4h8a4 4 0 010 8H6V4zm0 8h9a4 4 0 010 8H6v-8z" }));
+        scope.ItalicIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M10 4h8m-8 16h8M14 4l-4 16" }));
+        scope.UnderlineIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M6 4v7a6 6 0 0012 0V4m-2 16h-8" }));
+        scope.AlignLeftIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 6h18M3 10h12M3 14h18M3 18h12" }));
+        scope.AlignCenterIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 6h18M6 10h12M3 14h18M6 18h12" }));
+        scope.AlignRightIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M3 6h18M9 10h12M3 14h18M9 18h12" }));
+        scope.ShieldCheckIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" }));
+        scope.SparklesIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" }));
+        scope.GiftIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M21 11.25v8.25a2.25 2.25 0 0 1-2.25 2.25H5.25a2.25 2.25 0 0 1-2.25-2.25v-8.25M12 15v3m0 0-3-3m3 3 3-3M3.75 6.75h16.5M3.75 6.75a2.25 2.25 0 0 1-2.25-2.25v-1.5a2.25 2.25 0 0 1 2.25-2.25h16.5a2.25 2.25 0 0 1 2.25 2.25v1.5a2.25 2.25 0 0 1-2.25 2.25" }));
+        scope.HandThumbUpIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.085a2 2 0 00-1.736.97l-1.9 4.5M7 20h-2a2 2 0 01-2-2v-6a2 2 0 012-2h2" }));
+        scope.BoltIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" }));
+        scope.ArrowPathIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 11.667 0l3.181-3.183m-4.991-2.691v4.992m0 0h-4.992m4.992 0-3.181-3.183a8.25 8.25 0 0 0-11.667 0l-3.181 3.183" }));
+        scope.QrCodeIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 4h4v4H4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6-6h4v4h-4V4zM10 4h4v4h-4V4zM4 16h4v4H4v-4zm6 6h4v-4h-4v4zM16 4h4v4h-4V4zm0 6h4v4h-4v-4zm-6 6h4v4h-4v-4zm6 0h4v4h-4v-4z" }));
+        scope.DocumentTextIcon = scope.createIcon(React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" }));
+      })(AppScope, React);
+      // === END components/icons/index.tsx ===
+
+      // === BEGIN hooks/useTheme.tsx ===
+      ((scope, React) => {
+        const { useState, useEffect, useMemo, createContext, useContext } = React;
+        const ThemeContext = createContext(undefined);
+
+        scope.ThemeProvider = ({ children }) => {
+            const [theme, setTheme] = useState(() => {
+                if (typeof window !== 'undefined') {
+                    const savedTheme = localStorage.getItem('theme');
+                    if (savedTheme) {
+                        return savedTheme;
+                    }
+                    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                return 'light';
+            });
+
+            useEffect(() => {
+                const root = window.document.documentElement;
+                if (theme === 'dark') {
+                    root.classList.add('dark');
+                } else {
+                    root.classList.remove('dark');
+                }
+                localStorage.setItem('theme', theme);
+            }, [theme]);
+
+            const toggleTheme = () => {
+                setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+            };
+            
+            const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+
+            return React.createElement(ThemeContext.Provider, { value }, children);
+        };
+
+        scope.useTheme = () => {
+            const context = useContext(ThemeContext);
+            if (context === undefined) {
+                throw new Error('useTheme must be used within a ThemeProvider');
+            }
+            return context;
+        };
+      })(AppScope, React);
+      // === END hooks/useTheme.tsx ===
+      
+      // === BEGIN hooks/useIntersectionObserver.ts ===
+      ((scope, React) => {
+        const { useEffect } = React;
+        scope.useIntersectionObserver = (selector, threshold = 0.1) => {
+            useEffect(() => {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('active');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    { threshold }
+                );
+
+                const elements = document.querySelectorAll(selector);
+                elements.forEach((el) => observer.observe(el));
+
+                return () => {
+                    elements.forEach((el) => observer.unobserve(el));
+                };
+            }, [selector, threshold]);
+        };
+      })(AppScope, React);
+      // === END hooks/useIntersectionObserver.ts ===
+
+      // === BEGIN services/toolImplementations.ts ===
+      ((scope, React) => {
+        const { forwardRef, useEffect, useState, useRef, useImperativeHandle, useCallback } = React;
+        const {
+            CompressIcon, MergeIcon, SplitIcon, WordIcon, PptIcon, ExcelIcon, EditIcon, JpgIcon, SignIcon,
+            WatermarkIcon, RotateIcon, HtmlIcon, LockIcon, UnlockIcon, OrganizeIcon, PageNumberIcon, OcrIcon,
+            RedactIcon, CropIcon, QrCodeIcon, TypeIcon, DocumentTextIcon, PointerIcon, PencilIcon, EraserIcon,
+            RectangleIcon, CircleIcon, LineIcon, UndoIcon, RedoIcon, ZoomOutIcon, ZoomInIcon, ExitIcon,
+            BoldIcon, ItalicIcon, UnderlineIcon, AlignLeftIcon, AlignCenterIcon, AlignRightIcon
+        } = scope;
+
+        // Global library aliases
+        const PDFLib = window.PDFLib;
+        const pdfjsLib = window.pdfjsLib;
+        const fabric = window.fabric;
+        const Tesseract = window.Tesseract;
+        const QRCode = window.QRCode;
+        const JSZip = window.JSZip;
+        const mammoth = window.mammoth;
+        const html2pdf = window.html2pdf;
+        const PptxGenJS = window.PptxGenJS;
+        const XLSX = window.XLSX;
+
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+
+        const createDownload = (data, filename) => {
+            const blob = data instanceof Blob ? data : new Blob([data], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const event = new CustomEvent('create-download', { detail: { url, filename } });
+            window.dispatchEvent(event);
+        };
+
+        const placeholderProcess = (toolTitle) => async () => {
+            alert(`${toolTitle} is not yet implemented.`);
+            return Promise.resolve();
+        };
+
+        const fonts = [
+            { name: 'Arial', family: 'Arial, sans-serif' },
+            { name: 'Helvetica', family: 'Helvetica, sans-serif' },
+            { name: 'Times New Roman', family: "'Times New Roman', Times, serif" },
+            { name: 'Courier New', family: "'Courier New', Courier, monospace" },
+            { name: 'Roboto', family: 'Roboto, sans-serif' },
+            { name: 'Montserrat', family: 'Montserrat, sans-serif' },
+        ];
+
+        const EditPdfComponent = forwardRef(({ files = [], onProcess, onClose }, ref) => {
+            const canvasRef = useRef(null);
+            const fabricCanvasRef = useRef(null);
+            const pdfDocRef = useRef(null);
+            
+            const fabricStatesRef = useRef({});
+            const historyRef = useRef({});
+            const historyIndexRef = useRef({});
+            const isUpdatingFromHistory = useRef(false);
+
+            const [thumbnails, setThumbnails] = useState([]);
+            const [totalPages, setTotalPages] = useState(0);
+            const [currentPage, setCurrentPage] = useState(1);
+            const [zoom, setZoom] = useState(1);
+            const [activeTool, setActiveTool] = useState('select');
+            const [toolSettings, setToolSettings] = useState({
+                fillColor: '#ef444480',
+                strokeColor: '#ef4444',
+                textColor: '#111827',
+                brushWidth: 5,
+                fontSize: 24,
+                fontFamily: 'Roboto, sans-serif',
+            });
+            const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
+            const [isTextSelected, setIsTextSelected] = useState(false);
+            const [activeObjectStyles, setActiveObjectStyles] = useState({
+                fontWeight: 'normal', fontStyle: 'normal', underline: false, textAlign: 'left',
+            });
+            const [outputFilename, setOutputFilename] = useState('');
+            
+            const [isGenerating, setIsGenerating] = useState(false);
+            const [previewUrl, setPreviewUrl] = useState(null);
+            const [pdfBlob, setPdfBlob] = useState(null);
+
+
+            useEffect(() => {
+                setOutputFilename(files[0]?.name.replace(/\\.pdf$/i, '_edited.pdf') || 'edited.pdf');
+            }, [files]);
+            
+            const updateHistoryButtons = useCallback(() => {
+                const pageHistory = historyRef.current[currentPage] || [];
+                const currentIndex = historyIndexRef.current[currentPage] ?? -1;
+                setHistoryState({
+                    canUndo: currentIndex > 0,
+                    canRedo: currentIndex < pageHistory.length - 1,
+                });
+            }, [currentPage]);
+            
+            const saveState = useCallback((canvas) => {
+                if (isUpdatingFromHistory.current) return;
+                const pageHistory = historyRef.current[currentPage] || [];
+                let currentIndex = historyIndexRef.current[currentPage] ?? -1;
+                const newHistory = pageHistory.slice(0, currentIndex + 1);
+                const newState = canvas.toJSON();
+                newHistory.push(newState);
+                historyRef.current[currentPage] = newHistory;
+                historyIndexRef.current[currentPage] = newHistory.length - 1;
+                updateHistoryButtons();
+            }, [currentPage, updateHistoryButtons]);
+
+            const debouncedSaveState = useCallback(
+                (...args) => {
+                    const debounce = (func, delay) => {
+                        let timeout;
+                        return (...args) => {
+                            clearTimeout(timeout);
+                            timeout = window.setTimeout(() => func(...args), delay);
+                        };
+                    };
+                    return debounce(saveState, 300)(...args);
+                },
+                [saveState]
+            );
+
+            const undo = useCallback(() => {
+                const currentIndex = historyIndexRef.current[currentPage];
+                if (currentIndex > 0) {
+                    isUpdatingFromHistory.current = true;
+                    const newIndex = currentIndex - 1;
+                    historyIndexRef.current[currentPage] = newIndex;
+                    const prevState = historyRef.current[currentPage][newIndex];
+                    fabricCanvasRef.current.loadFromJSON(prevState, () => {
+                        fabricCanvasRef.current.renderAll();
+                        isUpdatingFromHistory.current = false;
+                    });
+                    updateHistoryButtons();
+                }
+            }, [currentPage, updateHistoryButtons]);
+
+            const redo = useCallback(() => {
+                const pageHistory = historyRef.current[currentPage];
+                const currentIndex = historyIndexRef.current[currentPage];
+                if (currentIndex < pageHistory.length - 1) {
+                    isUpdatingFromHistory.current = true;
+                    const newIndex = currentIndex + 1;
+                    historyIndexRef.current[currentPage] = newIndex;
+                    const nextState = pageHistory[newIndex];
+                    fabricCanvasRef.current.loadFromJSON(nextState, () => {
+                        fabricCanvasRef.current.renderAll();
+                        isUpdatingFromHistory.current = false;
+                    });
+                    updateHistoryButtons();
+                }
+            }, [currentPage, updateHistoryButtons]);
+
+            useImperativeHandle(ref, () => ({
+                getSaveState: () => {
+                    if (fabricCanvasRef.current) {
+                        fabricStatesRef.current[currentPage] = fabricCanvasRef.current.toJSON();
+                    }
+                    return fabricStatesRef.current;
+                },
+                getOutputFilename: () => outputFilename,
+            }));
+
+            const renderPage = useCallback(async (pageNum) => {
+                if (!pdfDocRef.current || !fabricCanvasRef.current) return;
+                const fabricCanvas = fabricCanvasRef.current;
+                const page = await pdfDocRef.current.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 1.5 * zoom });
+
+                fabricCanvas.setWidth(viewport.width);
+                fabricCanvas.setHeight(viewport.height);
+
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = viewport.width;
+                tempCanvas.height = viewport.height;
+                const context = tempCanvas.getContext('2d');
+                if(!context) return;
+                
+                await page.render({ canvasContext: context, viewport }).promise;
+                const dataUrl = tempCanvas.toDataURL();
+                fabricCanvas.setBackgroundImage(dataUrl, fabricCanvas.renderAll.bind(fabricCanvas));
+
+                const pageState = fabricStatesRef.current[pageNum];
+                if (pageState) {
+                    fabricCanvas.loadFromJSON(pageState, () => fabricCanvas.renderAll());
+                } else {
+                    fabricCanvas.clear();
+                    saveState(fabricCanvas);
+                }
+                updateHistoryButtons();
+            }, [zoom, saveState, updateHistoryButtons]);
+            
+            useEffect(() => {
+                if(pdfDocRef.current) {
+                    renderPage(currentPage);
+                }
+            }, [zoom, currentPage, renderPage]);
+
+            const applyTextFormatting = (property, value) => {
+                const canvas = fabricCanvasRef.current;
+                const activeObject = canvas?.getActiveObject();
+                if (activeObject?.type === 'textbox') {
+                    if (activeObject.isEditing) {
+                        activeObject.setSelectionStyles({ [property]: value });
+                    } else {
+                        activeObject.set(property, value);
+                    }
+                    canvas.requestRenderAll();
+                    debouncedSaveState(canvas);
+                }
+            };
+
+            const toggleTextStyle = (style) => {
+                const canvas = fabricCanvasRef.current;
+                const activeObject = canvas?.getActiveObject();
+                if (activeObject?.type === 'textbox') {
+                    const isToggled = style === 'fontWeight' ? activeObject[style] === 'bold' : style === 'fontStyle' ? activeObject[style] === 'italic' : activeObject[style];
+                    const newValue = style === 'fontWeight' ? (isToggled ? 'normal' : 'bold') : style === 'fontStyle' ? (isToggled ? 'normal' : 'italic') : !isToggled;
+                    
+                    if (activeObject.isEditing && activeObject.selectionStart !== activeObject.selectionEnd) {
+                        activeObject.setSelectionStyles({ [style]: newValue });
+                    } else {
+                        activeObject.set(style, newValue);
+                    }
+                    
+                    canvas.requestRenderAll();
+                    debouncedSaveState(canvas);
+                    
+                    setActiveObjectStyles(s => ({ ...s, [style]: newValue }));
+                }
+            };
+            
+            const setAlignment = (align) => {
+                applyTextFormatting('textAlign', align);
+                setActiveObjectStyles({...activeObjectStyles, textAlign: align });
+            };
+
+            useEffect(() => {
+                const file = files[0];
+                if (!file) return;
+
+                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
+                
+                const initCanvas = () => {
+                    if (canvasRef.current && !fabricCanvasRef.current) {
+                        const canvas = new fabric.Canvas(canvasRef.current);
+                        fabricCanvasRef.current = canvas;
+
+                        const handleSelection = (e) => {
+                            const selection = e.target || e.selected?.[0];
+                            if (!selection) {
+                                setIsTextSelected(false);
+                                return;
+                            }
+
+                            const isText = selection.type === 'textbox';
+                            setIsTextSelected(isText);
+
+                            if (isText) {
+                                setActiveObjectStyles({
+                                    fontWeight: selection.fontWeight || 'normal',
+                                    fontStyle: selection.fontStyle || 'normal',
+                                    underline: selection.underline || false,
+                                    textAlign: selection.textAlign || 'left',
+                                });
+                                setToolSettings(s => ({
+                                    ...s, 
+                                    textColor: selection.fill || '#111827',
+                                    fontFamily: selection.fontFamily, 
+                                    fontSize: selection.fontSize
+                                }));
+                            } else {
+                                setToolSettings(s => ({...s, fillColor: selection.fill || 'transparent', strokeColor: selection.stroke || '#000000' }));
+                            }
+                        };
+
+                        canvas.on('selection:created', handleSelection);
+                        canvas.on('selection:updated', handleSelection);
+                        canvas.on('selection:cleared', () => setIsTextSelected(false));
+                        canvas.on('object:added', () => debouncedSaveState(canvas));
+                        canvas.on('object:removed', () => debouncedSaveState(canvas));
+                        canvas.on('object:modified', () => debouncedSaveState(canvas));
+                    }
+                };
+
+                const loadPdf = async () => {
+                    const pdfData = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(pdfData).promise;
+                    pdfDocRef.current = pdf;
+                    setTotalPages(pdf.numPages);
+                    setCurrentPage(1);
+                    fabricStatesRef.current = {}; historyRef.current = {}; historyIndexRef.current = {};
+                    await renderPage(1);
+                    generateThumbnails(pdf);
+                };
+
+                const generateThumbnails = async (pdf) => {
+                    const thumbs = await Promise.all(Array.from({ length: pdf.numPages }, async (_, i) => {
+                        const page = await pdf.getPage(i + 1);
+                        const viewport = page.getViewport({ scale: 0.2 });
+                        const canvas = document.createElement('canvas');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        const ctx = canvas.getContext('2d');
+                        if (!ctx) return '';
+                        await page.render({ canvasContext: ctx, viewport }).promise;
+                        return canvas.toDataURL();
+                    }));
+                    setThumbnails(thumbs);
+                };
+
+                initCanvas();
+                loadPdf();
+
+                return () => { if(fabricCanvasRef.current) { fabricCanvasRef.current.dispose(); fabricCanvasRef.current = null; } };
+            }, [files, renderPage, debouncedSaveState]);
+            
+            useEffect(() => {
+                const canvas = fabricCanvasRef.current;
+                if (!canvas) return;
+
+                canvas.isDrawingMode = false;
+                canvas.off('mouse:down');
+                canvas.selection = true;
+                canvas.forEachObject((obj) => obj.set({ selectable: true }));
+
+                const addShape = (shapeType) => (o) => {
+                    if (o.target || o.e.defaultPrevented) return;
+                    const pointer = canvas.getPointer(o.e);
+                    let shape;
+                    const sharedProps = {
+                        left: pointer.x, top: pointer.y, width: 0, height: 0,
+                        fill: toolSettings.fillColor, stroke: toolSettings.strokeColor, strokeWidth: toolSettings.brushWidth,
+                    };
+
+                    if (shapeType === 'rect') shape = new fabric.Rect(sharedProps);
+                    else if (shapeType === 'circle') shape = new fabric.Ellipse({ ...sharedProps, rx: 0, ry: 0, originX: 'left', originY: 'top' });
+                    else if (shapeType === 'line') shape = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], { stroke: toolSettings.strokeColor, strokeWidth: toolSettings.brushWidth });
+                    
+                    if (!shape) return;
+                    canvas.add(shape);
+
+                    const onMouseMove = (oMove) => {
+                        const pointerMove = canvas.getPointer(oMove.e);
+                        const width = Math.abs(pointer.x - pointerMove.x);
+                        const height = Math.abs(pointer.y - pointerMove.y);
+                        const left = Math.min(pointer.x, pointerMove.x);
+                        const top = Math.min(pointer.y, pointerMove.y);
+
+                        if (shapeType === 'rect') {
+                            shape.set({ width, height, left, top });
+                        } else if (shapeType === 'circle') {
+                            shape.set({ rx: width / 2, ry: height / 2, left, top });
+                        } else if (shapeType === 'line') {
+                            shape.set({ x2: pointerMove.x, y2: pointerMove.y });
+                        }
+                        canvas.renderAll();
+                    };
+                    const onMouseUp = () => { canvas.off('mouse:move', onMouseMove); canvas.off('mouse:up', onMouseUp); debouncedSaveState(canvas); };
+                    canvas.on('mouse:move', onMouseMove);
+                    canvas.on('mouse:up', onMouseUp);
+                };
+                
+                if (activeTool === 'text') {
+                    canvas.on('mouse:down', (o) => {
+                        if (o.target) return;
+                        const pointer = canvas.getPointer(o.e);
+                        const text = new fabric.Textbox('Your text here', {
+                            left: pointer.x, top: pointer.y, fill: toolSettings.textColor, fontSize: toolSettings.fontSize, fontFamily: toolSettings.fontFamily, width: 200,
+                        });
+                        canvas.add(text).setActiveObject(text);
+                        setActiveTool('select');
+                    });
+                } else if (activeTool === 'rect' || activeTool === 'circle' || activeTool === 'line') {
+                    canvas.on('mouse:down', addShape(activeTool));
+                } else if (activeTool === 'draw') {
+                    canvas.isDrawingMode = true;
+                    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+                    canvas.freeDrawingBrush.color = toolSettings.strokeColor;
+                    canvas.freeDrawingBrush.width = toolSettings.brushWidth;
+                } else if (activeTool === 'eraser') {
+                    canvas.isDrawingMode = true;
+                    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+                    canvas.freeDrawingBrush.width = toolSettings.brushWidth;
+                    canvas.freeDrawingBrush.globalCompositeOperation = 'destination-out';
+                }
+                
+                return () => { if(canvas) canvas.off('mouse:down'); };
+            }, [activeTool, toolSettings, debouncedSaveState]);
+
+            const goToPage = (pageNum) => {
+                if (pageNum < 1 || pageNum > totalPages || pageNum === currentPage) return;
+                if (fabricCanvasRef.current) fabricStatesRef.current[currentPage] = fabricCanvasRef.current.toJSON();
+                setCurrentPage(pageNum);
+            };
+
+            const handleZoom = (newZoom) => {
+                const clampedZoom = Math.max(0.2, Math.min(newZoom, 5));
+                setZoom(clampedZoom);
+            };
+            
+            const handleColorChange = (type, color) => {
+                const prop = type === 'fill' ? 'fillColor' : 'strokeColor';
+                setToolSettings(s => ({ ...s, [prop]: color }));
+                const canvas = fabricCanvasRef.current;
+                const activeObject = canvas?.getActiveObject();
+                if (activeObject) {
+                    activeObject.set(type, color);
+                    canvas.requestRenderAll();
+                    debouncedSaveState(canvas);
+                }
+            };
+            
+            const handleGeneratePreview = async () => {
+                setIsGenerating(true);
+                try {
+                    if (fabricCanvasRef.current) {
+                        fabricStatesRef.current[currentPage] = fabricCanvasRef.current.toJSON();
+                    }
+                    
+                    const { PDFDocument } = PDFLib;
+                    const file = files[0];
+                    const existingPdfBytes = await file.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                    const tempCanvas = new fabric.StaticCanvas(null, { width: 1, height: 1 });
+                    const pages = pdfDoc.getPages();
+
+                    for (let i = 0; i < pages.length; i++) {
+                        const pageNum = i + 1;
+                        if (fabricStatesRef.current[pageNum]) {
+                            const page = pages[i];
+                            const { width, height } = page.getSize();
+                            tempCanvas.setDimensions({ width, height });
+
+                            const pageState = { ...fabricStatesRef.current[pageNum] };
+                            pageState.backgroundImage = null;
+                            
+                            await new Promise(resolve => tempCanvas.loadFromJSON(pageState, () => {
+                                tempCanvas.renderAll();
+                                resolve(true);
+                            }));
+                            
+                            const dataUrl = tempCanvas.toDataURL({ format: 'png' });
+                            const pngImage = await pdfDoc.embedPng(dataUrl);
+                            page.drawImage(pngImage, { x: 0, y: 0, width: width, height: height });
+                        }
+                    }
+                    
+                    tempCanvas.dispose();
+                    const pdfBytes = await pdfDoc.save();
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    setPdfBlob(blob);
+                    setPreviewUrl(url);
+                } catch (error) {
+                    console.error("Error generating PDF preview:", error);
+                    alert("Could not generate PDF preview. Please try again.");
+                } finally {
+                    setIsGenerating(false);
+                }
+            };
+
+            const handleDownload = () => {
+                if (!pdfBlob || !previewUrl) return;
+                const a = document.createElement('a');
+                a.href = previewUrl;
+                a.download = outputFilename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+
+            const handleBackToEditor = () => {
+                if (previewUrl) URL.revokeObjectURL(previewUrl);
+                setPreviewUrl(null);
+                setPdfBlob(null);
+            };
+
+            useEffect(() => {
+                const url = previewUrl;
+                return () => {
+                    if (url) URL.revokeObjectURL(url);
+                };
+            }, [previewUrl]);
+
+            const inputBaseClasses = 'h-9 px-2 py-1 border rounded-md bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent';
+            const colorInputClasses = 'w-8 h-8 p-1 border-2 border-transparent hover:border-primary dark:border-border-dark dark:hover:border-primary rounded cursor-pointer bg-clip-content';
+            const rangeInputClasses = 'w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-primary';
+
+            const IconButton = ({ onClick, disabled, title, children }) =>
+                React.createElement('button', { onClick, disabled, title, className: 'p-2 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors' },
+                    children
+                );
+
+            const VerticalToolButton = ({ tool, Icon, label }) =>
+                React.createElement('button', {
+                    onClick: () => setActiveTool(tool),
+                    className: `flex flex-col items-center justify-center p-2 rounded-lg transition-colors w-full ${activeTool === tool ? 'bg-primary/10 text-primary' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}`,
+                    title: label,
+                }, 
+                React.createElement(Icon, { className: 'h-6 w-6' }),
+                React.createElement('span', { className: 'text-xs mt-1' }, label)
+                );
+                
+            const TextFormatButton = ({ Icon, label, value }) =>
+                React.createElement('button', {
+                    onClick: () => {
+                        if (label === 'Bold') toggleTextStyle('fontWeight');
+                        else if (label === 'Italic') toggleTextStyle('fontStyle');
+                        else if (label === 'Underline') toggleTextStyle('underline');
+                        else if (label.includes('Align') && value) setAlignment(value);
+                    },
+                    className: `p-2 rounded-md transition-colors ${
+                        (label === 'Bold' && activeObjectStyles.fontWeight === 'bold') ||
+                        (label === 'Italic' && activeObjectStyles.fontStyle === 'italic') ||
+                        (label === 'Underline' && activeObjectStyles.underline) ||
+                        (label.includes('Align') && activeObjectStyles.textAlign === value)
+                        ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`,
+                    title: label,
+                }, React.createElement(Icon, { className: 'h-5 w-5' }));
+            
+            const ContextualOptionsBar = () => {
+                const hasShapeOptions = ['rect', 'circle', 'line', 'draw', 'eraser'].includes(activeTool) || (activeTool === 'select' && fabricCanvasRef.current?.getActiveObject() && !isTextSelected);
+                const hasTextOptions = activeTool === 'text' || (activeTool === 'select' && isTextSelected);
+
+                if (!hasShapeOptions && !hasTextOptions) return null;
+
+                return React.createElement('div', { className: 'flex flex-wrap items-center gap-2 p-2 border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark h-14' },
+                    hasTextOptions && React.createElement(React.Fragment, null,
+                        React.createElement('label', { className: 'flex items-center' },
+                            React.createElement('input', {
+                                type: 'color', title: 'Text Color', value: toolSettings.textColor,
+                                onChange: e => { const newColor = e.target.value; applyTextFormatting('fill', newColor); setToolSettings(s => ({...s, textColor: newColor})); },
+                                className: colorInputClasses,
+                            })
+                        ),
+                        React.createElement('div', { className: 'w-px h-6 bg-border-light dark:bg-border-dark mx-1' }),
+                        React.createElement(TextFormatButton, { Icon: BoldIcon, label: 'Bold' }),
+                        React.createElement(TextFormatButton, { Icon: ItalicIcon, label: 'Italic' }),
+                        React.createElement(TextFormatButton, { Icon: UnderlineIcon, label: 'Underline' }),
+                        React.createElement('div', { className: 'w-px h-6 bg-border-light dark:bg-border-dark mx-1' }),
+                        React.createElement(TextFormatButton, { Icon: AlignLeftIcon, label: 'Align Left', value: 'left' }),
+                        React.createElement(TextFormatButton, { Icon: AlignCenterIcon, label: 'Align Center', value: 'center' }),
+                        React.createElement(TextFormatButton, { Icon: AlignRightIcon, label: 'Align Right', value: 'right' }),
+                        React.createElement('div', { className: 'w-px h-6 bg-border-light dark:bg-border-dark mx-1' }),
+                        React.createElement('select', {
+                            title: 'Font Family', value: toolSettings.fontFamily,
+                            onChange: e => { applyTextFormatting('fontFamily', e.target.value); setToolSettings(s => ({...s, fontFamily: e.target.value})); },
+                            className: `${inputBaseClasses} w-40`
+                        }, ...fonts.map(font => React.createElement('option', { key: font.name, value: font.family, style: { fontFamily: font.family } }, font.name))),
+                        React.createElement('input', {
+                            type: 'number', title: 'Font Size', value: toolSettings.fontSize,
+                            onChange: e => { const size = parseInt(e.target.value, 10); if (size > 0) { applyTextFormatting('fontSize', size); setToolSettings(s => ({...s, fontSize: size})); } },
+                            className: `${inputBaseClasses} w-20`,
+                        })
+                    ),
+                    hasShapeOptions && React.createElement(React.Fragment, null,
+                        React.createElement('div', { className: 'w-px h-6 bg-border-light dark:bg-border-dark mx-1' }),
+                        React.createElement('label', { className: 'flex items-center' },
+                            React.createElement('input', { type: 'color', title: 'Fill Color', value: toolSettings.fillColor, onChange: (e) => handleColorChange('fill', e.target.value), className: colorInputClasses })
+                        ),
+                        React.createElement('label', { className: 'flex items-center' },
+                            React.createElement('input', { type: 'color', title: 'Stroke Color', value: toolSettings.strokeColor, onChange: (e) => handleColorChange('stroke', e.target.value), className: colorInputClasses })
+                        ),
+                        React.createElement('label', { className: 'flex items-center gap-2 text-sm', title: 'Brush/Stroke Size' }, 'Size:',
+                            React.createElement('input', { type: 'range', min: 1, max: 50, value: toolSettings.brushWidth, onChange: e => setToolSettings(s => ({ ...s, brushWidth: parseInt(e.target.value, 10) })), className: rangeInputClasses }),
+                            React.createElement('span', { className: 'w-6 text-center text-xs font-mono' }, toolSettings.brushWidth)
+                        )
+                    )
+                );
+            };
+
+            if (isGenerating) {
+                return React.createElement('div', { className: 'h-screen w-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark' },
+                    React.createElement('div', { className: 'spinner w-12 h-12 border-4 border-primary border-t-transparent rounded-full mb-4' }),
+                    React.createElement('p', { className: 'text-lg font-semibold font-heading' }, 'Generating your PDF...'),
+                    React.createElement('p', { className: 'text-sm text-text-muted-light dark:text-text-muted-dark' }, 'This may take a moment, please wait.')
+                );
+            }
+            
+            if (previewUrl && pdfBlob) {
+                return React.createElement('div', { className: 'h-screen w-screen flex flex-col bg-background-dark' },
+                    React.createElement('header', { className: 'flex items-center justify-between p-2 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark shadow-sm flex-shrink-0' },
+                        React.createElement('p', { className: 'text-lg font-bold truncate text-text-light dark:text-text-dark pl-2 font-heading' }, outputFilename),
+                        React.createElement('div', { className: 'flex items-center gap-2' },
+                            React.createElement('button', { onClick: handleBackToEditor, className: 'px-4 py-2 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600', title: 'Return to the editor' }, 'Back to Editor'),
+                            React.createElement('button', { onClick: handleDownload, className: 'px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700', title: 'Download the edited PDF' }, 'Download PDF'),
+                            React.createElement(IconButton, { onClick: onClose, title: 'Exit' }, React.createElement(ExitIcon, { className: 'h-6 w-6' }))
+                        )
+                    ),
+                    React.createElement('main', { className: 'flex-1 bg-gray-500' },
+                        React.createElement('iframe', { src: previewUrl, className: 'w-full h-full border-none', title: 'PDF Preview' })
+                    )
+                );
+            }
+
+            return React.createElement('div', { className: 'h-screen w-screen flex flex-col bg-background-light dark:bg-gray-700 text-text-light dark:text-text-dark' },
+                React.createElement('header', { className: 'flex items-center justify-between p-2 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark shadow-sm flex-shrink-0' },
+                    React.createElement('input', { type: 'text', value: outputFilename, onChange: e => setOutputFilename(e.target.value), className: 'font-heading text-lg font-bold truncate px-2 py-1 rounded bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 w-1/3 border border-transparent focus:border-border-light dark:focus:border-border-dark transition', title: 'Click to edit the output filename' }),
+                    React.createElement('div', { className: 'flex items-center gap-2' },
+                        React.createElement(IconButton, { onClick: undo, disabled: !historyState.canUndo, title: 'Undo (Ctrl+Z)' }, React.createElement(UndoIcon, { className: 'h-6 w-6' })),
+                        React.createElement(IconButton, { onClick: redo, disabled: !historyState.canRedo, title: 'Redo (Ctrl+Y)' }, React.createElement(RedoIcon, { className: 'h-6 w-6' })),
+                        React.createElement('div', { className: 'w-px h-6 bg-border-light dark:bg-border-dark mx-1' }),
+                        React.createElement(IconButton, { onClick: () => handleZoom(zoom * 0.8), title: 'Zoom Out' }, React.createElement(ZoomOutIcon, { className: 'h-6 w-6' })),
+                        React.createElement('span', { className: 'w-12 text-center font-mono' }, `${Math.round(zoom * 100)}%`),
+                        React.createElement(IconButton, { onClick: () => handleZoom(zoom * 1.25), title: 'Zoom In' }, React.createElement(ZoomInIcon, { className: 'h-6 w-6' })),
+                        React.createElement('div', { className: 'w-px h-6 bg-border-light dark:bg-border-dark mx-1' }),
+                        React.createElement('button', { onClick: handleGeneratePreview, className: 'px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors', title: 'Finalize and Preview PDF' }, 'Done'),
+                        React.createElement(IconButton, { onClick: onClose, title: 'Exit Editor' }, React.createElement(ExitIcon, { className: 'h-6 w-6' }))
+                    )
+                ),
+                React.createElement('div', { className: 'flex-1 flex overflow-hidden' },
+                    React.createElement('aside', { className: 'w-48 bg-surface-light dark:bg-surface-dark p-2 overflow-y-auto border-r border-border-light dark:border-border-dark' },
+                        thumbnails.map((thumb, index) => React.createElement('div', { key: index, onClick: () => goToPage(index + 1), className: `cursor-pointer p-1 mb-2 rounded-lg border-2 ${currentPage === index + 1 ? 'border-primary' : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'}`, title: `Go to page ${index + 1}` },
+                            React.createElement('img', { src: thumb, alt: `Page ${index + 1}`, className: 'w-full shadow-md rounded' }),
+                            React.createElement('p', {className: 'text-center text-xs mt-1 text-text-muted-light dark:text-text-muted-dark'}, `Page ${index + 1}`)
+                        ))
+                    ),
+                    React.createElement('aside', { className: 'w-24 bg-surface-light dark:bg-surface-dark p-2 flex flex-col items-center gap-2 border-r border-border-light dark:border-border-dark' },
+                        React.createElement(VerticalToolButton, { tool: 'select', Icon: PointerIcon, label: 'Select' }),
+                        React.createElement(VerticalToolButton, { tool: 'text', Icon: TypeIcon, label: 'Text' }),
+                        React.createElement(VerticalToolButton, { tool: 'draw', Icon: PencilIcon, label: 'Draw' }),
+                        React.createElement(VerticalToolButton, { tool: 'eraser', Icon: EraserIcon, label: 'Erase' }),
+                        React.createElement('div', {className: 'w-full h-px bg-border-light dark:bg-border-dark my-1'}),
+                        React.createElement(VerticalToolButton, { tool: 'rect', Icon: RectangleIcon, label: 'Rect' }),
+                        React.createElement(VerticalToolButton, { tool: 'circle', Icon: CircleIcon, label: 'Ellipse' }),
+                        React.createElement(VerticalToolButton, { tool: 'line', Icon: LineIcon, label: 'Line' })
+                    ),
+                    React.createElement('main', { className: 'flex-1 flex flex-col bg-background-light dark:bg-background-dark' },
+                        React.createElement(ContextualOptionsBar, null),
+                        React.createElement('div', { className: 'flex-1 overflow-auto p-4' },
+                            React.createElement('canvas', { ref: canvasRef, className: 'shadow-lg mx-auto rounded' })
+                        )
+                    )
+                )
+            );
+        });
+
+        const QrCodeGeneratorComponent = forwardRef(({ options, setOptions }, ref) => {
+            const [qrCodeUrl, setQrCodeUrl] = useState('');
+            const text = options.text || '';
+
+            useEffect(() => {
+                if (text) {
+                    QRCode.toDataURL(text, { width: 256, margin: 2 }, (err, url) => {
+                        if (err) console.error(err);
+                        else setQrCodeUrl(url);
+                    });
+                } else {
+                    setQrCodeUrl('');
+                }
+            }, [text]);
+
+            useImperativeHandle(ref, () => ({
+                getQrCodeUrl: () => qrCodeUrl,
+            }));
+
+            return React.createElement('div', { className: 'flex flex-col md:flex-row gap-6' },
+                React.createElement('div', { className: 'flex-1' },
+                    React.createElement('label', { htmlFor: 'qr-text', className: 'block text-sm font-medium text-text-light dark:text-text-dark mb-2 font-heading' }, 'Text to Encode'),
+                    React.createElement('textarea', {
+                        id: 'qr-text',
+                        rows: 8,
+                        className: 'w-full p-2 border border-border-light rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-surface-dark dark:border-border-dark',
+                        placeholder: 'Enter URL or text here...',
+                        value: text,
+                        onChange: (e) => setOptions({ ...options, text: e.target.value })
+                    })
+                ),
+                React.createElement('div', { className: 'w-full md:w-64 flex flex-col items-center justify-center p-4 bg-background-light dark:bg-background-dark rounded-lg border border-border-light dark:border-border-dark' },
+                    qrCodeUrl ?
+                    React.createElement('img', { src: qrCodeUrl, alt: 'Generated QR Code', className: 'w-56 h-56 object-contain' }) :
+                    React.createElement('div', { className: 'w-56 h-56 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded' },
+                        React.createElement('span', { className: 'text-text-muted-light dark:text-text-muted-dark text-center text-sm p-4' }, 'QR Code will appear here')
+                    )
+                )
+            );
+        });
+
+        const TextToPdfComponent = forwardRef(({ options, setOptions }, ref) => {
+            const text = options.text || 'Start typing your text here...';
+            const font = options.font || 'Helvetica';
+            const size = options.size || 12;
+
+            return React.createElement('div', { className: 'space-y-4' },
+                React.createElement('div', { className: 'flex flex-wrap items-center gap-4' },
+                    React.createElement('div', null,
+                        React.createElement('label', { htmlFor: 'font-select', className: 'text-sm font-medium' }, 'Font Family:'),
+                        React.createElement('select', {
+                            id: 'font-select',
+                            value: font,
+                            onChange: (e) => setOptions({ ...options, font: e.target.value }),
+                            className: 'ml-2 p-2 border border-border-light rounded-md dark:bg-surface-dark dark:border-border-dark'
+                        },
+                        React.createElement('option', { value: 'Helvetica' }, 'Helvetica'),
+                        React.createElement('option', { value: 'TimesRoman' }, 'Times New Roman'),
+                        React.createElement('option', { value: 'Courier' }, 'Courier'),
+                        React.createElement('option', { value: 'Symbol' }, 'Symbol')
+                        )
+                    ),
+                    React.createElement('div', null,
+                        React.createElement('label', { htmlFor: 'font-size', className: 'text-sm font-medium' }, 'Font Size:'),
+                        React.createElement('input', {
+                            type: 'number',
+                            id: 'font-size',
+                            value: size,
+                            onChange: (e) => setOptions({ ...options, size: parseInt(e.target.value, 10) || 12 }),
+                            className: 'ml-2 w-20 p-2 border border-border-light rounded-md dark:bg-surface-dark dark:border-border-dark'
+                        })
+                    )
+                ),
+                React.createElement('textarea', {
+                    rows: 15,
+                    className: 'w-full p-3 border border-border-light rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-surface-dark dark:border-border-dark font-mono text-sm',
+                    value: text,
+                    onChange: (e) => setOptions({ ...options, text: e.target.value })
+                })
+            );
+        });
+
+        const toolImplementationsList = [
+            {
+                title: 'Compress PDF',
+                description: 'Reduce PDF file size to a specific target.',
+                icon: CompressIcon,
+                fileType: 'application/pdf',
+                multipleFiles: false,
+                optionsComponent: forwardRef(({ options, setOptions }, _ref) => {
+                    const selectedSize = options.targetSize || '100'; // Default to 100kb
+                    const customSize = options.customSize || '';
+
+                    const handleSizeChange = (e) => {
+                        const value = e.target.value;
+                        if (value === 'custom') {
+                            setOptions({ ...options, targetSize: 'custom' });
+                        } else {
+                            setOptions({ ...options, targetSize: value, customSize: '' });
+                        }
+                    };
+
+                    const handleCustomInputChange = (e) => {
+                        setOptions({ ...options, customSize: e.target.value });
+                    };
+
+                    const sizes = [
+                        { value: '50', label: 'Small (approx. 50 KB)' },
+                        { value: '100', label: 'Medium (approx. 100 KB)' },
+                        { value: '200', label: 'Large (approx. 200 KB)' },
+                        { value: '300', label: 'X-Large (approx. 300 KB)' },
+                    ];
+
+                    const radioClassName = 'h-4 w-4 text-primary border-gray-400 dark:border-gray-500 bg-gray-100 dark:bg-gray-700 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-surface-dark';
+
+                    const sizeOptions = sizes.map(size =>
+                        React.createElement('label', { key: size.value, className: 'flex items-center p-3 border border-border-light dark:border-border-dark rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50' },
+                            React.createElement('input', {
+                                type: 'radio',
+                                name: 'compression-size',
+                                value: size.value,
+                                checked: selectedSize === size.value,
+                                onChange: handleSizeChange,
+                                className: radioClassName
+                            }),
+                            React.createElement('span', { className: 'ml-3 text-sm font-medium' }, size.label)
+                        )
+                    );
+
+                    const customOption = React.createElement('div', { className: 'p-3 border border-border-light dark:border-border-dark rounded-lg' },
+                        React.createElement('label', { className: 'flex items-center cursor-pointer' },
+                            React.createElement('input', {
+                                type: 'radio',
+                                name: 'compression-size',
+                                value: 'custom',
+                                checked: selectedSize === 'custom',
+                                onChange: handleSizeChange,
+                                className: radioClassName
+                            }),
+                            React.createElement('span', { className: 'ml-3 text-sm font-medium' }, 'Custom Size')
+                        ),
+                        selectedSize === 'custom' && React.createElement('div', { className: 'mt-3 flex items-center' },
+                            React.createElement('input', {
+                                type: 'number',
+                                placeholder: 'e.g., 250',
+                                value: customSize,
+                                onChange: handleCustomInputChange,
+                                className: 'w-full p-2 border border-border-light rounded dark:bg-surface-dark dark:border-border-dark'
+                            }),
+                            React.createElement('span', { className: 'ml-2 text-sm text-text-muted-light dark:text-text-muted-dark' }, 'KB')
+                        )
+                    );
+
+                    return React.createElement('div', { className: 'space-y-3' }, ...sizeOptions, customOption);
+                }),
+                process: async (files, { targetSize = '100', customSize, showLoader }) => {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
+                    const file = files[0];
+                    
+                    const targetBytes = (targetSize === 'custom' ? parseInt(customSize, 10) : parseInt(targetSize, 10)) * 1024;
+                    if (isNaN(targetBytes) || targetBytes <= 0) {
+                        throw new Error("Invalid target size specified.");
+                    }
+
+                    const initialPdfBytes = await file.arrayBuffer();
+                    if (initialPdfBytes.byteLength < targetBytes) {
+                        alert("The original file is already smaller than the target size. No compression needed.");
+                        createDownload(new Uint8Array(initialPdfBytes), `${file.name.replace(/\\.pdf$/i, '')}_original.pdf`);
+                        return;
+                    }
+
+                    const pdf = await pdfjsLib.getDocument(initialPdfBytes).promise;
+                    const pageCanvases = [];
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        showLoader?.(`Preparing page ${i}/${pdf.numPages}...`);
+                        const page = await pdf.getPage(i);
+                        const viewport = page.getViewport({ scale: 1.5 });
+                        const canvas = document.createElement('canvas');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        const context = canvas.getContext('2d');
+                        if(!context) throw new Error('Could not get canvas context');
+                        context.fillStyle = 'white';
+                        context.fillRect(0, 0, canvas.width, canvas.height);
+                        await page.render({ canvasContext: context, viewport }).promise;
+                        pageCanvases.push(canvas);
+                    }
+                    
+                    const createPdfFromCanvases = async (quality, progressPrefix = '') => {
+                        const { PDFDocument } = PDFLib;
+                        const pdfDoc = await PDFDocument.create();
+                        for (let i = 0; i < pageCanvases.length; i++) {
+                            showLoader?.(`${progressPrefix}Processing page ${i+1}/${pdf.numPages}...`);
+                            const canvas = pageCanvases[i];
+                            const page = pdfDoc.addPage([canvas.width, canvas.height]);
+                            const jpgUrl = canvas.toDataURL('image/jpeg', quality);
+                            const jpgImageBytes = await fetch(jpgUrl).then(res => res.arrayBuffer());
+                            const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
+                            page.drawImage(jpgImage, {
+                                x: 0,
+                                y: 0,
+                                width: canvas.width,
+                                height: canvas.height,
+                            });
+                        }
+                        return await pdfDoc.save();
+                    };
+
+                    let high = 1.0;
+                    let low = 0.0;
+                    let bestPdfBytes = null;
+                    let bestQuality = 0.1;
+
+                    for (let i = 0; i < 10; i++) {
+                        const mid = (high + low) / 2;
+                        const progressPrefix = `Pass ${i + 1}/10 (Q: ${Math.round(mid * 100)}%): `;
+                        const pdfBytes = await createPdfFromCanvases(mid, progressPrefix);
+                        if (pdfBytes.length <= targetBytes) {
+                            bestPdfBytes = pdfBytes;
+                            bestQuality = mid;
+                            low = mid; 
+                        } else {
+                            high = mid;
+                        }
+                    }
+
+                    if (!bestPdfBytes) {
+                        showLoader?.('Target size too small, using lowest quality...');
+                        bestPdfBytes = await createPdfFromCanvases(0.1, 'Final Pass: ');
+                    } else {
+                        showLoader?.(`Finalizing with optimal quality (${Math.round(bestQuality * 100)}%)...`);
+                        bestPdfBytes = await createPdfFromCanvases(bestQuality, 'Final Pass: ');
+                    }
+                    
+                    const finalSize = (bestPdfBytes.length / 1024).toFixed(2);
+                    showLoader?.(`Compression complete! Final size: ${finalSize} KB`);
+
+                    createDownload(bestPdfBytes, `${file.name.replace(/\\.pdf$/i, '')}_compressed.pdf`);
+                },
+            },
+            {
+                title: 'Image Compressor',
+                description: 'Reduce image file size to a specific target.',
+                icon: CompressIcon,
+                fileType: 'image/*',
+                multipleFiles: true,
+                new: true,
+                optionsComponent: forwardRef(({ options, setOptions }, _ref) => {
+                    const selectedSize = options.targetSize || '500';
+                    const customSize = options.customSize || '';
+
+                    const handleSizeChange = (e) => {
+                        const value = e.target.value;
+                        if (value === 'custom') {
+                            setOptions({ ...options, targetSize: 'custom' });
+                        } else {
+                            setOptions({ ...options, targetSize: value, customSize: '' });
+                        }
+                    };
+
+                    const handleCustomInputChange = (e) => {
+                        setOptions({ ...options, customSize: e.target.value });
+                    };
+
+                    const sizes = [
+                        { value: '250', label: 'Small (approx. 250 KB)' },
+                        { value: '500', label: 'Medium (approx. 500 KB)' },
+                        { value: '1024', label: 'Large (approx. 1 MB)' },
+                        { value: '2048', label: 'X-Large (approx. 2 MB)' },
+                    ];
+                    
+                    const radioClassName = 'h-4 w-4 text-primary border-gray-400 dark:border-gray-500 bg-gray-100 dark:bg-gray-700 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-surface-dark';
+
+                    const sizeOptions = sizes.map(size =>
+                        React.createElement('label', { key: size.value, className: 'flex items-center p-3 border border-border-light dark:border-border-dark rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50' },
+                            React.createElement('input', { type: 'radio', name: 'compression-size', value: size.value, checked: selectedSize === size.value, onChange: handleSizeChange, className: radioClassName }),
+                            React.createElement('span', { className: 'ml-3 text-sm font-medium' }, size.label)
+                        )
+                    );
+
+                    const customOption = React.createElement('div', { className: 'p-3 border border-border-light dark:border-border-dark rounded-lg' },
+                        React.createElement('label', { className: 'flex items-center cursor-pointer' },
+                            React.createElement('input', { type: 'radio', name: 'compression-size', value: 'custom', checked: selectedSize === 'custom', onChange: handleSizeChange, className: radioClassName }),
+                            React.createElement('span', { className: 'ml-3 text-sm font-medium' }, 'Custom Size')
+                        ),
+                        selectedSize === 'custom' && React.createElement('div', { className: 'mt-3 flex items-center' },
+                            React.createElement('input', { type: 'number', placeholder: 'e.g., 800', value: customSize, onChange: handleCustomInputChange, className: 'w-full p-2 border border-border-light rounded dark:bg-surface-dark dark:border-border-dark' }),
+                            React.createElement('span', { className: 'ml-2 text-sm text-text-muted-light dark:text-text-muted-dark' }, 'KB')
+                        )
+                    );
+
+                    return React.createElement('div', { className: 'space-y-3' }, ...sizeOptions, customOption);
+                }),
+                process: async (files, { targetSize = '500', customSize, showLoader }) => {
+                    const targetBytes = (targetSize === 'custom' ? parseInt(customSize, 10) : parseInt(targetSize, 10)) * 1024;
+                    if (isNaN(targetBytes) || targetBytes <= 0) {
+                        throw new Error("Invalid target size specified.");
+                    }
+
+                    const loadImage = (file) => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = new Image();
+                            img.onload = () => resolve(img);
+                            img.onerror = (err) => reject(new Error(`Failed to load image: ${err}`));
+                            if (e.target?.result) {
+                                img.src = e.target.result;
+                            } else {
+                                reject(new Error('FileReader did not return a result.'));
+                            }
+                        };
+                        reader.onerror = (err) => reject(new Error(`FileReader error: ${err}`));
+                        reader.readAsDataURL(file);
+                    });
+
+                    const createImageBlob = (img, quality, mimeType = 'image/jpeg') => new Promise((resolve, reject) => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        if (!ctx) return reject(new Error('Could not get canvas context'));
+                        ctx.drawImage(img, 0, 0);
+                        canvas.toBlob(blob => {
+                            if (!blob) return reject(new Error('Failed to create blob from canvas'));
+                            resolve(blob);
+                        }, mimeType, quality);
+                    });
+                    
+                    const compressImageToTarget = async (file, onProgress) => {
+                        const img = await loadImage(file);
+                        
+                        const isPng = file.type === 'image/png';
+                        if (isPng) {
+                            const pngBlob = await createImageBlob(img, 1.0, 'image/png');
+                            if(pngBlob.size <= targetBytes) {
+                                return pngBlob;
+                            }
+                        }
+                        
+                        let high = 1.0, low = 0.0, bestBlob = null;
+                        for (let i = 0; i < 10; i++) {
+                            onProgress?.(`Optimizing (Pass ${i+1}/10)...`);
+                            const mid = (low + high) / 2;
+                            const blob = await createImageBlob(img, mid);
+                            if (blob.size <= targetBytes) {
+                                bestBlob = blob;
+                                low = mid;
+                            } else {
+                                high = mid;
+                            }
+                        }
+                        
+                        if (!bestBlob) bestBlob = await createImageBlob(img, 0.1); 
+                        return bestBlob;
+                    };
+
+                    if (files.length === 1) {
+                        const file = files[0];
+                        if (file.size < targetBytes) {
+                            alert("The original image is already smaller than the target size. No compression needed.");
+                            createDownload(file, `${file.name.split('.').slice(0, -1).join('.')}_original.${file.name.split('.').pop()}`);
+                            return;
+                        }
+
+                        showLoader?.('Compressing image...');
+                        const compressedBlob = await compressImageToTarget(file, showLoader);
+                        if (compressedBlob) {
+                            const finalSize = (compressedBlob.size / 1024).toFixed(2);
+                            showLoader?.(`Compression complete! Final size: ${finalSize} KB`);
+                            createDownload(compressedBlob, `${file.name.split('.').slice(0, -1).join('.')}_compressed.jpg`);
+                        } else {
+                            showLoader?.('Compression failed.');
+                            alert('Could not compress the image.');
+                        }
+                    } else {
+                        const zip = new JSZip();
+                        for (const [index, file] of files.entries()) {
+                            const onProgress = (text) => showLoader?.(`Compressing image ${index + 1}/${files.length}: ${text}`);
+                            
+                            showLoader?.(`Compressing image ${index + 1}/${files.length}: Reading file...`);
+                            let compressedBlob;
+                            if (file.size < targetBytes) {
+                                compressedBlob = file;
+                            } else {
+                                compressedBlob = await compressImageToTarget(file, onProgress);
+                            }
+
+                            if (compressedBlob) {
+                                const extension = compressedBlob.type === 'image/png' ? 'png' : 'jpg';
+                                zip.file(`${file.name.split('.').slice(0, -1).join('.')}_compressed.${extension}`, compressedBlob);
+                            }
+                        }
+                        showLoader?.('Zipping files...');
+                        const content = await zip.generateAsync({ type: 'blob' });
+                        createDownload(content, 'compressed_images.zip');
+                    }
+                }
+            },
+            {
+                title: 'Merge PDF',
+                description: 'Combine multiple PDFs into one unified document.',
+                icon: MergeIcon,
+                fileType: 'application/pdf',
+                multipleFiles: true,
+                process: async (files, { showLoader }) => {
+                    const { PDFDocument } = PDFLib;
+                    const mergedPdf = await PDFDocument.create();
+                    for (const [index, file] of files.entries()) {
+                        if (showLoader) showLoader(`Merging file ${index + 1}/${files.length}: ${file.name}`);
+                        const pdfBytes = await file.arrayBuffer();
+                        const pdf = await PDFDocument.load(pdfBytes);
+                        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                        copiedPages.forEach((page) => mergedPdf.addPage(page));
+                    }
+                    if (showLoader) showLoader('Finalizing merged PDF...');
+                    const mergedPdfBytes = await mergedPdf.save();
+                    createDownload(mergedPdfBytes, 'merged.pdf');
+                },
+            },
+            {
+                title: 'Protect PDF',
+                description: 'Add a password and encrypt your PDF file.',
+                icon: LockIcon,
+                fileType: 'application/pdf',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    const file = files[0];
+                    const password = prompt("Enter a password to protect the PDF:");
+                    if (!password) {
+                        alert("A password is required.");
+                        return;
+                    }
+                    if (showLoader) showLoader('Loading PDF...');
+                    const { PDFDocument } = PDFLib;
+                    const existingPdfBytes = await file.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                    pdfDoc.setProducer('DocxTools Web');
+                    pdfDoc.setCreator('DocxTools Web');
+                    if (showLoader) showLoader('Encrypting and saving protected PDF...');
+                    const pdfBytes = await pdfDoc.save({ userPassword: password, ownerPassword: password });
+                    createDownload(pdfBytes, `${file.name.replace(/\\.pdf$/i, '')}_protected.pdf`);
+                },
+            },
+            {
+                title: 'Unlock PDF',
+                description: 'Remove passwords and restrictions from your PDFs.',
+                icon: UnlockIcon,
+                fileType: 'application/pdf',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    const file = files[0];
+                    const password = prompt("Enter the password for the PDF file:");
+                    if (!password) {
+                        alert("Password is required to unlock the PDF.");
+                        return;
+                    }
+                    try {
+                        if (showLoader) showLoader('Attempting to decrypt PDF...');
+                        const { PDFDocument } = PDFLib;
+                        const existingPdfBytes = await file.arrayBuffer();
+                        const pdfDoc = await PDFDocument.load(existingPdfBytes, { password: password, ignoreEncryption: false });
+                        if (showLoader) showLoader('Saving unlocked PDF...');
+                        const pdfBytes = await pdfDoc.save();
+                        createDownload(pdfBytes, `${file.name.replace(/\\.pdf$/i, '')}_unlocked.pdf`);
+                    } catch (error) {
+                        alert("Failed to unlock PDF. The password may be incorrect or the encryption algorithm is not supported.");
+                        console.error(error);
+                    }
+                },
+            },
+            { title: 'Split PDF', description: 'Extract specific pages or page ranges from a PDF file.', icon: SplitIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Split PDF') },
+            {
+                title: 'PDF to Text (OCR)',
+                description: 'Extract text from a PDF using optical character recognition.',
+                icon: DocumentTextIcon,
+                fileType: 'application/pdf',
+                multipleFiles: false,
+                new: true,
+                process: async (files, { showLoader }) => {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
+                    const { createWorker } = Tesseract;
+                    const file = files[0];
+                    const pdfData = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(pdfData).promise;
+                    const worker = await createWorker();
+                    await worker.load();
+                    await worker.loadLanguage('eng');
+                    await worker.initialize('eng');
+                    
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        if (showLoader) showLoader(`Processing page ${i}/${pdf.numPages}...`);
+                        const page = await pdf.getPage(i);
+                        const viewport = page.getViewport({ scale: 2.0 });
+                        const canvas = document.createElement('canvas');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        const context = canvas.getContext('2d');
+                        if (!context) continue;
+                        await page.render({ canvasContext: context, viewport }).promise;
+                        const { data: { text } } = await worker.recognize(canvas);
+                        fullText += text + '\\n\\n-- Page ' + i + ' --\\n\\n';
+                    }
+
+                    await worker.terminate();
+                    if (showLoader) showLoader('Finalizing text file...');
+                    const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+                    createDownload(blob, `${file.name.replace(/\\.pdf$/i, '')}.txt`);
+                },
+            },
+            { title: 'PDF to Word', description: 'Convert PDF files to editable Word documents.', icon: WordIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('PDF to Word') },
+            {
+                title: 'Word to PDF',
+                description: 'Convert Word documents to PDF format.',
+                icon: WordIcon,
+                fileType: '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    if (showLoader) showLoader('Converting Word to HTML...');
+                    const file = files[0];
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.convertToHtml({ arrayBuffer });
+                    const html = result.value;
+                    if (showLoader) showLoader('Converting HTML to PDF...');
+                    const element = document.createElement('div');
+                    element.innerHTML = html;
+                    element.style.padding = '2cm';
+                    element.style.lineHeight = '1.5';
+                    element.style.fontFamily = 'Times New Roman, serif';
+                    element.style.fontSize = '12pt';
+                    document.body.appendChild(element);
+                    await html2pdf().from(element).set({
+                        margin: 1,
+                        filename: `${file.name.replace(/\\.(docx|doc)$/i, '')}.pdf`,
+                        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    }).save();
+                    document.body.removeChild(element);
+                },
+            },
+            { title: 'PDF to PowerPoint', description: 'Convert PDFs into editable PowerPoint presentations.', icon: PptIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('PDF to PowerPoint') },
+            {
+                title: 'PowerPoint to PDF',
+                description: 'Convert PowerPoint presentations to PDF.',
+                icon: PptIcon,
+                fileType: '.ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    alert('PowerPoint to PDF conversion is complex and has limited support. Images and text will be extracted, but layout may differ significantly.');
+                    const file = files[0];
+                    const pptx = new PptxGenJS();
+                    if (showLoader) showLoader('Loading PowerPoint file...');
+                    await pptx.load(file);
+                    if (showLoader) showLoader('Saving as PDF...');
+                    await pptx.save({ fileName: `${file.name.replace(/\\.(pptx|ppt)$/i, '')}`, format: 'pdf' });
+                },
+            },
+            { title: 'PDF to Excel', description: 'Extract data from PDFs into Excel spreadsheets.', icon: ExcelIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('PDF to Excel') },
+            {
+                title: 'Excel to PDF',
+                description: 'Convert Excel spreadsheets to PDF documents.',
+                icon: ExcelIcon,
+                fileType: '.xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    showLoader?.('This is a basic conversion. For complex layouts, formatting may be lost.');
+                    const file = files[0];
+                    showLoader?.('Reading Excel file...');
+                    const data = await file.arrayBuffer();
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    showLoader?.('Converting spreadsheet to HTML...');
+                    const html = XLSX.utils.sheet_to_html(worksheet);
+                    const element = document.createElement('div');
+                    element.innerHTML = `<style>table { border-collapse: collapse; width: 100%; font-family: sans-serif; } th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; } th { background-color: #f2f2f2; }</style>${html}`;
+                    document.body.appendChild(element);
+                    showLoader?.('Generating PDF from HTML...');
+                    await html2pdf().from(element).set({
+                        margin: 0.5,
+                        filename: `${file.name.replace(/\\.(xlsx|xls)$/i, '')}.pdf`,
+                        jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+                    }).save();
+                    document.body.removeChild(element);
+                },
+            },
+            {
+                title: 'Edit PDF',
+                description: 'Add text, shapes, and drawings to a PDF file.',
+                icon: EditIcon,
+                fileType: 'application/pdf',
+                multipleFiles: false,
+                new: true,
+                optionsComponent: EditPdfComponent,
+                process: async (files, options) => {
+                    const { showLoader } = options;
+                    const { PDFDocument } = PDFLib;
+                    const file = files[0];
+                    if (showLoader) showLoader('Loading original PDF...');
+                    const existingPdfBytes = await file.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                    const fabricStates = options.fabricStates;
+                    const outputFilename = options.outputFilename || 'edited.pdf';
+                    const tempCanvas = new fabric.StaticCanvas(null, { width: 1, height: 1 });
+                    const pages = pdfDoc.getPages();
+                    for (let i = 0; i < pages.length; i++) {
+                        const pageNum = i + 1;
+                        if (fabricStates[pageNum]) {
+                            if (showLoader) showLoader(`Applying edits to page ${pageNum}/${pages.length}...`);
+                            const page = pages[i];
+                            const { width, height } = page.getSize();
+                            tempCanvas.setDimensions({ width, height });
+                            const pageState = { ...fabricStates[pageNum] };
+                            pageState.backgroundImage = null;
+                            await new Promise(resolve => tempCanvas.loadFromJSON(pageState, () => {
+                                tempCanvas.renderAll();
+                                resolve(true);
+                            }));
+                            const dataUrl = tempCanvas.toDataURL({ format: 'png' });
+                            const pngImage = await pdfDoc.embedPng(dataUrl);
+                            page.drawImage(pngImage, { x: 0, y: 0, width, height });
+                        }
+                    }
+                    tempCanvas.dispose();
+                    if (showLoader) showLoader('Saving final PDF...');
+                    const pdfBytes = await pdfDoc.save();
+                    createDownload(pdfBytes, outputFilename);
+                },
+            },
+            {
+                title: 'PDF to JPG',
+                description: 'Convert each page of a PDF to a high-quality JPG image.',
+                icon: JpgIcon,
+                fileType: 'application/pdf',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
+                    const file = files[0];
+                    const pdfData = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(pdfData).promise;
+                    if (pdf.numPages === 1) {
+                        if (showLoader) showLoader('Converting page 1/1...');
+                        const page = await pdf.getPage(1);
+                        const viewport = page.getViewport({ scale: 2.0 });
+                        const canvas = document.createElement('canvas');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        const context = canvas.getContext('2d');
+                        if(!context) return;
+                        await page.render({ canvasContext: context, viewport: viewport }).promise;
+                        canvas.toBlob((blob) => {
+                            if (blob) createDownload(blob, `${file.name.replace('.pdf', '')}.jpg`);
+                        }, 'image/jpeg', 0.95);
+                    } else {
+                        const zip = new JSZip();
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            if (showLoader) showLoader(`Converting page ${i}/${pdf.numPages}...`);
+                            const page = await pdf.getPage(i);
+                            const viewport = page.getViewport({ scale: 2.0 });
+                            const canvas = document.createElement('canvas');
+                            canvas.width = viewport.width;
+                            canvas.height = viewport.height;
+                            const context = canvas.getContext('2d');
+                            if(!context) continue;
+                            await page.render({ canvasContext: context, viewport: viewport }).promise;
+                            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                            if (blob) {
+                                zip.file(`${file.name.replace('.pdf', '')}_page_${i}.jpg`, blob);
+                            }
+                        }
+                        if (showLoader) showLoader('Zipping images...');
+                        const content = await zip.generateAsync({ type: "blob" });
+                        createDownload(content, `${file.name.replace('.pdf', '')}.zip`);
+                    }
+                },
+            },
+            {
+                title: 'JPG to PDF',
+                description: 'Convert JPG, PNG, and other image formats to PDF.',
+                icon: JpgIcon,
+                fileType: 'image/*',
+                multipleFiles: true,
+                process: async (files, { showLoader }) => {
+                    const { PDFDocument } = PDFLib;
+                    const pdfDoc = await PDFDocument.create();
+                    for (let i = 0; i < files.length; i++) {
+                        if (showLoader) showLoader(`Adding image ${i+1}/${files.length}...`);
+                        const file = files[i];
+                        const imageBytes = await file.arrayBuffer();
+                        let image;
+                        if (file.type === 'image/jpeg') {
+                            image = await pdfDoc.embedJpg(imageBytes);
+                        } else if (file.type === 'image/png') {
+                            image = await pdfDoc.embedPng(imageBytes);
+                        } else {
+                            console.warn(`Unsupported image type: ${file.type}. Skipping.`);
+                            continue;
+                        }
+                        const page = pdfDoc.addPage([image.width, image.height]);
+                        page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+                    }
+                    if (showLoader) showLoader('Finalizing PDF...');
+                    const pdfBytes = await pdfDoc.save();
+                    createDownload(pdfBytes, 'images_converted.pdf');
+                },
+            },
+            { title: 'Sign PDF', description: 'Add your signature to a PDF document securely.', icon: SignIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Sign PDF') },
+            { title: 'Watermark PDF', description: 'Stamp an image or text over your PDF in seconds.', icon: WatermarkIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Watermark PDF') },
+            { title: 'Rotate PDF', description: 'Rotate all or specific pages in your PDF file.', icon: RotateIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Rotate PDF') },
+            {
+                title: 'HTML to PDF',
+                description: 'Convert web pages to PDF documents.',
+                icon: HtmlIcon,
+                fileType: '.html,.htm,text/html',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    const file = files[0];
+                    if (showLoader) showLoader('Reading HTML file...');
+                    const htmlContent = await file.text();
+                    const element = document.createElement('div');
+                    element.innerHTML = htmlContent;
+                    document.body.appendChild(element);
+                    if (showLoader) showLoader('Generating PDF from HTML...');
+                    await html2pdf().from(element).set({ filename: `${file.name.replace(/\\.(html|htm)$/i, '')}.pdf` }).save();
+                    document.body.removeChild(element);
+                },
+            },
+            { title: 'Organize PDF', description: 'Reorder, delete, or duplicate pages in your PDF.', icon: OrganizeIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Organize PDF') },
+            { title: 'Add Page Numbers', description: 'Insert page numbers into your PDF file.', icon: PageNumberIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Add Page Numbers') },
+            {
+                title: 'Scan to PDF (OCR)',
+                description: 'Convert scanned documents into searchable PDFs.',
+                icon: OcrIcon,
+                fileType: 'image/*',
+                multipleFiles: false,
+                process: async (files, { showLoader }) => {
+                    const { PDFDocument, rgb } = PDFLib;
+                    const { createWorker } = Tesseract;
+                    const file = files[0];
+                    const worker = await createWorker();
+                    await worker.load();
+                    await worker.loadLanguage('eng');
+                    await worker.initialize('eng');
+                    const imageData = await file.arrayBuffer();
+                    const imageBlob = new Blob([imageData], { type: file.type });
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    if (showLoader) showLoader('Recognizing text in the image...');
+                    const { data } = await worker.recognize(imageUrl);
+                    URL.revokeObjectURL(imageUrl);
+                    if (showLoader) showLoader('Creating searchable PDF...');
+                    const pdfDoc = await PDFDocument.create();
+                    const image = file.type === 'image/png' ? await pdfDoc.embedPng(imageData) : await pdfDoc.embedJpg(imageData);
+                    const page = pdfDoc.addPage([image.width, image.height]);
+                    page.drawImage(image, { x: 0, y: 0 });
+                    data.words.forEach((word) => {
+                        const { x0, y0, x1, y1 } = word.bbox;
+                        page.drawText(word.text, { x: x0, y: page.getHeight() - y1, size: y1 - y0, color: rgb(1, 1, 1), opacity: 0 });
+                    });
+                    await worker.terminate();
+                    const pdfBytes = await pdfDoc.save();
+                    createDownload(pdfBytes, `${file.name.split('.')[0]}_ocr.pdf`);
+                },
+            },
+            { title: 'Redact PDF', description: 'Permanently remove sensitive content from your PDF.', icon: RedactIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Redact PDF') },
+            { title: 'Crop PDF', description: 'Crop the visible area of pages in your PDF.', icon: CropIcon, fileType: 'application/pdf', multipleFiles: false, process: placeholderProcess('Crop PDF') },
+            {
+                title: 'QR Code Generator',
+                description: 'Create a QR code from a URL or text.',
+                icon: QrCodeIcon,
+                new: true,
+                optionsComponent: QrCodeGeneratorComponent,
+                process: async (_, options) => {
+                    const qrCodeUrl = options.qrCodeUrl;
+                    if (!qrCodeUrl) {
+                        alert('Please generate a QR code first.');
+                        return;
+                    }
+                    const blob = await (await fetch(qrCodeUrl)).blob();
+                    createDownload(blob, 'qrcode.png');
+                },
+            },
+            {
+                title: 'Text to PDF',
+                description: 'Convert plain text into a PDF document.',
+                icon: TypeIcon,
+                new: true,
+                optionsComponent: TextToPdfComponent,
+                process: async (_, { text, font, size, showLoader }) => {
+                    showLoader?.('Creating PDF document...');
+                    const pdfDoc = await PDFDocument.create();
+                    let page = pdfDoc.addPage();
+                    const { width, height } = page.getSize();
+                    const margin = 50;
+
+                    const fontMap = {
+                        Helvetica: StandardFonts.Helvetica,
+                        TimesRoman: StandardFonts.TimesNewRoman,
+                        Courier: StandardFonts.Courier,
+                        Symbol: StandardFonts.Symbol,
+                    };
+                    const pdfFont = await pdfDoc.embedFont(fontMap[font] || StandardFonts.Helvetica);
+
+                    const textLines = text.split('\\n');
+                    let y = height - margin;
+
+                    const wrapText = (line) => {
+                        const words = line.split(' ');
+                        const wrappedLines = [];
+                        let currentLine = '';
+                        for (const word of words) {
+                            const testLine = currentLine ? `${currentLine} ${word}` : word;
+                            const lineWidth = pdfFont.widthOfTextAtSize(testLine, size);
+                            if (lineWidth < width - 2 * margin) {
+                                currentLine = testLine;
+                            } else {
+                                wrappedLines.push(currentLine);
+                                currentLine = word;
+                            }
+                        }
+                        wrappedLines.push(currentLine);
+                        return wrappedLines;
+                    };
+
+                    for (const line of textLines) {
+                        const wrapped = wrapText(line);
+                        for (const wrappedLine of wrapped) {
+                            if (y < margin) {
+                                page = pdfDoc.addPage();
+                                y = height - margin;
+                            }
+                            page.drawText(wrappedLine, {
+                                x: margin,
+                                y,
+                                font: pdfFont,
+                                size,
+                                color: rgb(0, 0, 0),
+                            });
+                            y -= size * 1.2;
+                        }
+                    }
+                    
+                    showLoader?.('Saving PDF...');
+                    const pdfBytes = await pdfDoc.save();
+                    createDownload(pdfBytes, 'text-to-pdf.pdf');
+                },
+            }
+        ];
+
+        const createId = (title) => title.toLowerCase().replace(/\\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+        scope.toolImplementations = toolImplementationsList.reduce((acc, tool) => {
+            const id = createId(tool.title);
+            acc[id] = { ...tool, id };
+            return acc;
+        }, {});
+      })(AppScope, React);
+      // === END services/toolImplementations.ts ===
+
+      // === BEGIN components/Header.tsx ===
+      ((scope, React) => {
+        const { useState, useEffect } = React;
+        const { useTheme } = scope;
+        const { FileIcon, SearchIcon, MoonIcon, SunIcon, XIcon, MenuIcon } = scope;
+
+        scope.Header = () => {
+            const [isScrolled, setIsScrolled] = useState(false);
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const { theme, toggleTheme } = useTheme();
+
+            useEffect(() => {
+                const handleScroll = () => setIsScrolled(window.scrollY > 10);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+            
+            const handleNavClick = (e, href) => {
+                e.preventDefault();
+                if (href === '#') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const targetElement = document.getElementById(href.substring(1));
+                    if (targetElement) {
+                        const headerOffset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+                        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                    }
+                }
+                if (isMenuOpen) setIsMenuOpen(false);
+            };
+
+            const navLinks = [
+                { name: 'Home', href: '#' },
+                { name: 'All Tools', href: '#tools' },
+                { name: 'About Us', href: '#about' },
+                { name: 'Contact Us', href: '#contact' },
+            ];
+
+            const Logo = () => React.createElement('a', { href: '#', onClick: (e) => handleNavClick(e, '#'), className: "flex items-center gap-2 text-2xl font-bold text-primary font-heading" },
+                React.createElement(FileIcon, { className: "h-7 w-7" }),
+                React.createElement('span', null, 'DocxTools')
+            );
+
+            return React.createElement('header', { className: `sticky top-0 z-50 transition-shadow duration-300 ${isScrolled ? 'shadow-md bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-sm' : 'bg-surface-light dark:bg-surface-dark'}` },
+                React.createElement('nav', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" },
+                    React.createElement('div', { className: "flex items-center justify-between h-16" },
+                        React.createElement('div', { className: "flex items-center" }, React.createElement(Logo, null)),
+                        React.createElement('div', { className: "hidden md:block" },
+                            React.createElement('div', { className: "ml-10 flex items-center space-x-4" },
+                                ...navLinks.map(link => React.createElement('a', { key: link.name, href: link.href, onClick: (e) => handleNavClick(e, link.href), className: "text-text-muted-light dark:text-text-muted-dark hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium" }, link.name))
+                            )
+                        ),
+                        React.createElement('div', { className: "flex items-center" },
+                            React.createElement('a', { href: "#tools-search", onClick: (e) => handleNavClick(e, '#tools'), 'aria-label': "Search for a tool", className: "p-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-gray-200 dark:hover:bg-gray-700" }, React.createElement(SearchIcon, { className: "h-6 w-6" })),
+                            React.createElement('button', { onClick: toggleTheme, 'aria-label': "Toggle theme", className: "p-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-surface-dark transition-colors" },
+                                theme === 'light' ? React.createElement(MoonIcon, { key: "moon", className: "h-6 w-6 fade-in" }) : React.createElement(SunIcon, { key: "sun", className: "h-6 w-6 fade-in" })
+                            ),
+                            React.createElement('div', { className: "md:hidden" },
+                                React.createElement('button', { onClick: () => setIsMenuOpen(!isMenuOpen), 'aria-label': "Open menu", className: "p-2 rounded-md text-text-muted-light dark:text-text-muted-dark" },
+                                    isMenuOpen ? React.createElement(XIcon, { className: "h-6 w-6" }) : React.createElement(MenuIcon, { className: "h-6 w-6" })
+                                )
+                            )
+                        )
+                    )
+                ),
+                React.createElement('div', { className: `fixed top-0 left-0 w-full h-full bg-surface-light dark:bg-background-dark z-50 transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:hidden` },
+                    React.createElement('div', { className: "flex justify-between items-center h-16 px-4 border-b border-border-light dark:border-border-dark" },
+                        React.createElement(Logo, null),
+                        React.createElement('button', { onClick: () => setIsMenuOpen(!isMenuOpen), 'aria-label': "Close menu", className: "p-2 rounded-md text-text-muted-light dark:text-text-muted-dark" }, React.createElement(XIcon, { className: "h-6 w-6" }))
+                    ),
+                    React.createElement('div', { className: "flex flex-col items-center justify-center h-[calc(100%-4rem)] space-y-8" },
+                        ...navLinks.map(link => React.createElement('a', { key: link.name, href: link.href, onClick: (e) => handleNavClick(e, link.href), className: "text-text-light dark:text-text-dark hover:text-primary text-2xl font-medium" }, link.name))
+                    )
+                )
+            );
+        };
+      })(AppScope, React);
+      // === END components/Header.tsx ===
+
+      // === BEGIN components/ToolCard.tsx ===
+      ((scope, React) => {
+        scope.ToolCard = ({ tool, onClick }) => {
+            const Icon = tool.icon;
+            return React.createElement('div', { onClick: onClick, className: "group relative flex flex-col items-center justify-center text-center p-6 h-full bg-surface-light dark:bg-surface-dark rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-2 border border-border-light dark:border-border-dark transition-all duration-300 cursor-pointer overflow-hidden" },
+                React.createElement('div', { className: "absolute top-0 left-0 w-full h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" }),
+                tool.new && React.createElement('span', { className: "absolute top-3 right-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full" }, "New!"),
+                React.createElement('div', { className: "mb-4 text-primary" }, React.createElement(Icon, { className: "h-12 w-12" })),
+                React.createElement('h3', { className: "text-lg font-bold text-text-light dark:text-text-dark font-heading" }, tool.title),
+                React.createElement('p', { className: "mt-2 text-sm text-text-muted-light dark:text-text-muted-dark flex-grow" }, tool.description)
+            );
+        };
+      })(AppScope, React);
+      // === END components/ToolCard.tsx ===
+
+      // === BEGIN components/ToolsGrid.tsx ===
+      ((scope, React) => {
+        const { useState, useMemo } = React;
+        const { toolImplementations } = scope;
+        const { ToolCard } = scope;
+        const { SearchIcon } = scope;
+
+        scope.ToolsGrid = ({ onToolSelect }) => {
+            const [searchQuery, setSearchQuery] = useState('');
+            
+            const sortedTools = useMemo(() => Object.values(toolImplementations), []);
+
+            const filteredTools = useMemo(() => {
+                if (!searchQuery) return sortedTools;
+                const lowerCaseQuery = searchQuery.toLowerCase();
+                return sortedTools.filter(tool =>
+                    tool.title.toLowerCase().includes(lowerCaseQuery) ||
+                    tool.description.toLowerCase().includes(lowerCaseQuery)
+                );
+            }, [searchQuery, sortedTools]);
+
+            return React.createElement('section', { id: "tools", className: "py-16 bg-background-light dark:bg-background-dark" },
+                React.createElement('div', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" },
+                    React.createElement('div', { className: "text-center mb-12 reveal" },
+                        React.createElement('h2', { className: "text-3xl font-extrabold text-text-light dark:text-text-dark sm:text-4xl font-heading" }, "Our Suite of Document Tools"),
+                        React.createElement('p', { className: "mt-4 text-lg text-text-muted-light dark:text-text-muted-dark" }, "Choose from over 28 tools to manage your documents effortlessly.")
+                    ),
+                    React.createElement('div', { className: "mb-12 max-w-2xl mx-auto reveal" },
+                        React.createElement('div', { className: "relative" },
+                            React.createElement('span', { className: "absolute inset-y-0 left-0 flex items-center pl-4" }, React.createElement(SearchIcon, { className: "h-5 w-5 text-text-muted-light dark:text-text-muted-dark" })),
+                            React.createElement('input', { id: "tools-search", type: "search", placeholder: "Search for a tool (e.g., 'merge', 'word', 'sign')...", value: searchQuery, onChange: (e) => setSearchQuery(e.target.value), className: "w-full pl-12 pr-4 py-3 border border-border-light rounded-full shadow-sm focus:ring-primary focus:border-primary bg-surface-light dark:bg-surface-dark dark:border-border-dark dark:placeholder-text-muted-dark", 'aria-label': "Search for a tool" })
+                        )
+                    ),
+                    React.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" },
+                        filteredTools.length > 0
+                            ? filteredTools.map((tool) => React.createElement('div', { key: tool.id, className: "reveal" }, React.createElement(ToolCard, { tool: tool, onClick: () => onToolSelect(tool) })))
+                            : React.createElement('div', { className: "col-span-full text-center py-12" }, React.createElement('p', { className: "text-xl text-text-muted-light dark:text-text-muted-dark" }, `No tools found for "${searchQuery}"`))
+                    )
+                )
+            );
+        };
+      })(AppScope, React);
+      // === END components/ToolsGrid.tsx ===
+
+      // === BEGIN components/About.tsx ===
+      ((scope, React) => {
+        const { GiftIcon, ShieldCheckIcon, SparklesIcon, HandThumbUpIcon, BoltIcon, ArrowPathIcon } = scope;
+        
+        scope.About = () => {
+            const features = [
+                { icon: GiftIcon, title: "Completely Free", description: "Access all 28 of our tools without any hidden fees, subscriptions, or limits. Powerful document processing is now available to everyone." },
+                { icon: ShieldCheckIcon, title: "Secure & Private", description: "Your privacy is our priority. All processing happens in your browser, so your files are never uploaded to our servers. Your data stays with you." },
+                { icon: SparklesIcon, title: "Powerful Features", description: "From merging and converting to our new advanced PDF editor, we provide a comprehensive suite of tools to handle any document task with ease." },
+                { icon: HandThumbUpIcon, title: "Simple & Intuitive", description: "Our clean interface is designed for everyone. No complicated software to install and no steep learning curve. Just click and get the job done." },
+                { icon: BoltIcon, title: "Reliable Performance", description: "Built with modern web technologies, DocxTools delivers fast and dependable results, processing your files in seconds without delay." },
+                { icon: ArrowPathIcon, title: "Always Improving", description: "We are constantly working to improve existing tools and add new features based on user feedback to be the best solution available online." },
+            ];
+
+            return React.createElement('section', { id: "about", className: "py-20 bg-surface-light dark:bg-surface-dark" },
+                React.createElement('div', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" },
+                    React.createElement('div', { className: "text-center mb-16 reveal" },
+                        React.createElement('h2', { className: "text-3xl font-extrabold text-text-light dark:text-text-dark sm:text-4xl font-heading" }, "Why DocxTools is Your Go-To PDF Solution"),
+                        React.createElement('p', { className: "mt-4 text-lg text-text-muted-light dark:text-text-muted-dark max-w-3xl mx-auto" }, "Discover the features and principles that make us the best choice for all your document management needs.")
+                    ),
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" },
+                        ...features.map((feature, index) =>
+                            React.createElement('div', { key: index, className: "text-center p-8 bg-background-light dark:bg-background-dark rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-transform duration-300 reveal" },
+                                React.createElement('div', { className: "flex items-center justify-center h-16 w-16 rounded-full bg-primary text-white mx-auto mb-6" }, React.createElement(feature.icon, { className: "h-8 w-8" })),
+                                React.createElement('h3', { className: "text-xl font-bold text-text-light dark:text-text-dark mb-2 font-heading" }, feature.title),
+                                React.createElement('p', { className: "text-text-muted-light dark:text-text-muted-dark" }, feature.description)
+                            )
+                        )
+                    )
+                )
+            );
+        };
+      })(AppScope, React);
+      // === END components/About.tsx ===
+
+      // === BEGIN components/Footer.tsx ===
+      ((scope, React) => {
+        scope.Footer = () => {
+            return React.createElement('footer', { id: "contact", className: "bg-surface-dark dark:bg-black text-text-muted-dark" },
+                React.createElement('div', { className: "max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8" },
+                    React.createElement('div', { className: "grid grid-cols-2 md:grid-cols-4 gap-8" },
+                        React.createElement('div', null,
+                            React.createElement('h3', { className: "text-sm font-semibold text-gray-400 tracking-wider uppercase font-heading" }, "About DocxTools"),
+                            React.createElement('p', { className: "mt-4 text-base text-gray-300" }, "Providing free and secure document processing tools that work directly in your browser. No uploads required.")
+                        ),
+                        React.createElement('div', null,
+                            React.createElement('h3', { className: "text-sm font-semibold text-gray-400 tracking-wider uppercase font-heading" }, "Tools"),
+                            React.createElement('ul', { className: "mt-4 space-y-4" },
+                                React.createElement('li', null, React.createElement('a', { href: "#tools", className: "text-base text-gray-300 hover:text-white" }, "Merge PDF")),
+                                React.createElement('li', null, React.createElement('a', { href: "#tools", className: "text-base text-gray-300 hover:text-white" }, "Split PDF")),
+                                React.createElement('li', null, React.createElement('a', { href: "#tools", className: "text-base text-gray-300 hover:text-white" }, "Compress PDF")),
+                                React.createElement('li', null, React.createElement('a', { href: "#tools", className: "text-base text-gray-300 hover:text-white" }, "Convert PDF"))
+                            )
+                        ),
+                        React.createElement('div', null,
+                            React.createElement('h3', { className: "text-sm font-semibold text-gray-400 tracking-wider uppercase font-heading" }, "Company"),
+                            React.createElement('ul', { className: "mt-4 space-y-4" },
+                                React.createElement('li', null, React.createElement('a', { href: "#about", className: "text-base text-gray-300 hover:text-white" }, "About")),
+                                React.createElement('li', null, React.createElement('a', { href: "#", className: "text-base text-gray-300 hover:text-white" }, "Privacy Policy")),
+                                React.createElement('li', null, React.createElement('a', { href: "#", className: "text-base text-gray-300 hover:text-white" }, "Terms of Service"))
+                            )
+                        ),
+                        React.createElement('div', null,
+                            React.createElement('h3', { className: "text-sm font-semibold text-gray-400 tracking-wider uppercase font-heading" }, "Contact"),
+                            React.createElement('ul', { className: "mt-4 space-y-4" },
+                                React.createElement('li', null, React.createElement('a', { href: "mailto:support@docxtools.com", className: "text-base text-gray-300 hover:text-white" }, "support@docxtools.com"))
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: "mt-8 border-t border-gray-700 pt-8 text-center" },
+                        React.createElement('p', { className: "text-base text-gray-400" }, "© 2024 DocxTools. All Rights Reserved.")
+                    )
+                )
+            );
+        };
+      })(AppScope, React);
+      // === END components/Footer.tsx ===
+
+      // === BEGIN components/Modal.tsx ===
+      ((scope, React) => {
+        const { useState, useCallback, useEffect, useRef } = React;
+        const { UploadIcon, XIcon, FileIcon, TrashIcon } = scope;
+
+        scope.Modal = ({ tool, onClose }) => {
+            const [files, setFiles] = useState([]);
+            const [isDragging, setIsDragging] = useState(false);
+            const [isLoading, setIsLoading] = useState(false);
+            const [loadingText, setLoadingText] = useState('');
+            const [output, setOutput] = useState(null);
+            const [options, setOptions] = useState({});
+            const [error, setError] = useState(null);
+            const fileInputRef = useRef(null);
+            const optionsRef = useRef(null);
+            
+            // Preview State
+            const [previewUrl, setPreviewUrl] = useState(null);
+            const [multiPreviewUrls, setMultiPreviewUrls] = useState([]);
+            const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+            const [pdfDoc, setPdfDoc] = useState(null);
+            const [pdfTotalPages, setPdfTotalPages] = useState(0);
+            const [pdfCurrentPage, setPdfCurrentPage] = useState(1);
+
+            const isFullScreen = tool.id === 'edit-pdf';
+            const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+            const requiresFileUpload = !!tool.fileType;
+
+            const isFileTypeAllowed = (file, acceptedTypesString) => {
+                if (!acceptedTypesString || acceptedTypesString === '*') return true;
+                const acceptedTypes = acceptedTypesString.split(',').map(t => t.trim().toLowerCase());
+                const fileExtension = file.name.includes('.') ? `.${file.name.split('.').pop()?.toLowerCase()}` : '';
+                const fileMime = file.type.toLowerCase();
+                const fileBaseMime = fileMime ? `${fileMime.split('/')[0]}/*` : '';
+                return acceptedTypes.some(type => {
+                    if (type.startsWith('.')) return fileExtension === type;
+                    if (type.endsWith('/*')) return fileBaseMime === type;
+                    return fileMime === type;
+                });
+            };
+
+            const resetModal = useCallback(() => {
+                setFiles([]); setOutput(null); setOptions({}); setError(null);
+                setPreviewUrl(null); setMultiPreviewUrls([]); setIsPreviewLoading(false);
+                setPdfDoc(null); setPdfTotalPages(0); setPdfCurrentPage(1);
+            }, []);
+
+            useEffect(() => { resetModal(); }, [tool, resetModal]);
+            
+            // Effect to generate previews when files change
+            useEffect(() => {
+                let isCancelled = false;
+                let objectUrlsToRevoke = [];
+
+                setPdfDoc(null); setPdfTotalPages(0); setPdfCurrentPage(1);
+                setPreviewUrl(null); setMultiPreviewUrls([]);
+
+                if (files.length === 0 || isFullScreen) return;
+
+                const generatePreviews = async () => {
+                    setIsPreviewLoading(true);
+
+                    if (files.length > 1) {
+                        const urls = await Promise.all(files.map(async (file) => {
+                            if (file.type.startsWith('image/')) {
+                                const url = URL.createObjectURL(file);
+                                objectUrlsToRevoke.push(url);
+                                return { url, name: file.name };
+                            }
+                            return { url: null, name: file.name };
+                        }));
+                        if (!isCancelled) setMultiPreviewUrls(urls);
+                    } else if (files.length === 1) {
+                        const file = files[0];
+                        if (file.type.startsWith('image/')) {
+                            const url = URL.createObjectURL(file);
+                            objectUrlsToRevoke.push(url);
+                            if (!isCancelled) setPreviewUrl(url);
+                        } else if (file.type === 'application/pdf') {
+                            try {
+                                const pdfjsLib = window.pdfjsLib;
+                                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`;
+                                const pdfData = await file.arrayBuffer();
+                                const pdf = await pdfjsLib.getDocument(pdfData).promise;
+                                if (isCancelled) return;
+                                setPdfDoc(pdf);
+                                setPdfTotalPages(pdf.numPages);
+                                setPdfCurrentPage(1);
+                            } catch (err) {
+                                console.error("Failed to load PDF:", err);
+                                if (!isCancelled) setPreviewUrl(null);
+                            }
+                        }
+                    }
+                    if (!isCancelled && !(files.length === 1 && files[0].type === 'application/pdf')) {
+                        setIsPreviewLoading(false);
+                    }
+                };
+
+                generatePreviews();
+
+                return () => {
+                    isCancelled = true;
+                    objectUrlsToRevoke.forEach(url => URL.revokeObjectURL(url));
+                };
+            }, [files, isFullScreen]);
+
+            // Effect to render a specific PDF page
+            useEffect(() => {
+                if (!pdfDoc) return;
+                let isCancelled = false;
+
+                const renderPage = async () => {
+                    setIsPreviewLoading(true);
+                    try {
+                        const page = await pdfDoc.getPage(pdfCurrentPage);
+                        const viewport = page.getViewport({ scale: 1.0 });
+                        const canvas = document.createElement('canvas');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        const context = canvas.getContext('2d');
+                        if (context) {
+                            await page.render({ canvasContext: context, viewport }).promise;
+                            if (!isCancelled) setPreviewUrl(canvas.toDataURL());
+                        }
+                    } catch (err) {
+                        console.error("Failed to render PDF page:", err);
+                        if (!isCancelled) setPreviewUrl(null);
+                    } finally {
+                        if (!isCancelled) setIsPreviewLoading(false);
+                    }
+                };
+
+                renderPage();
+                return () => { isCancelled = true; };
+            }, [pdfDoc, pdfCurrentPage]);
+
+            const handleFileChange = (selectedFiles) => {
+                if (!selectedFiles) return;
+                setError(null);
+                const newAcceptedFiles = [];
+                let validationError = null;
+                for (const file of Array.from(selectedFiles)) {
+                    if (file.size > MAX_FILE_SIZE) { validationError = `${file.name}: File is too large (max 50MB).`; break; }
+                    if (!isFileTypeAllowed(file, tool.fileType)) { validationError = `${file.name}: Invalid file type. Expected: ${tool.fileType}.`; break; }
+                    newAcceptedFiles.push(file);
+                }
+                if (validationError) { setError(validationError); return; }
+                if (tool.multipleFiles) { setFiles(prev => [...prev, ...newAcceptedFiles]); } else { setFiles(newAcceptedFiles.slice(0, 1)); }
+            };
+
+            const handleDragEvents = (e, isEntering) => { e.preventDefault(); e.stopPropagation(); setIsDragging(isEntering); };
+            const handleDrop = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); handleFileChange(e.dataTransfer.files); };
+            const removeFile = (indexToRemove) => { const newFiles = files.filter((_, i) => i !== indexToRemove); setFiles(newFiles); if (newFiles.length === 0) setError(null); };
+
+            const handleProcess = async () => {
+                if (requiresFileUpload && files.length === 0) return;
+                setIsLoading(true); setLoadingText('Processing...'); setOutput(null);
+                
+                let finalOptions = { ...options };
+                if (optionsRef.current) {
+                    if (tool.id === 'edit-pdf') {
+                        finalOptions.fabricStates = optionsRef.current.getSaveState();
+                        finalOptions.outputFilename = optionsRef.current.getOutputFilename();
+                    } else if (tool.id === 'qr-code-generator') {
+                        finalOptions.qrCodeUrl = optionsRef.current.getQrCodeUrl();
+                    }
+                }
+
+                try {
+                    await tool.process(files, { ...finalOptions, showLoader: setLoadingText });
+                } catch (err) {
+                    console.error('Processing error:', err);
+                    const errorMessage = err instanceof Error ? err.message : String(err);
+                    alert(`An error occurred: ${errorMessage}`);
+                } finally {
+                    setIsLoading(false);
+                    if(tool.id === 'edit-pdf') onClose();
+                }
+            };
+            
+            useEffect(() => {
+                const handleDownload = (event) => {
+                    const { url, filename } = event.detail;
+                    setOutput(prev => React.createElement(React.Fragment, null, prev,
+                        React.createElement('a', { href: url, download: filename, className: "block w-full text-center bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors mt-4" }, `Download ${filename}`)
+                    ));
+                };
+                window.addEventListener('create-download', handleDownload);
+                return () => window.removeEventListener('create-download', handleDownload);
+            }, []);
+
+            useEffect(() => {
+                const handleKeyDown = (event) => { if (event.key === 'Escape') onClose(); };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [onClose]);
+
+            const renderPreviewContent = () => {
+                if (isPreviewLoading) {
+                    return React.createElement('div', { className: 'flex flex-col items-center justify-center text-center h-full' },
+                        React.createElement('div', { className: 'spinner w-8 h-8 border-4 border-primary border-t-transparent rounded-full mb-2' }),
+                        React.createElement('p', { className: 'text-sm text-text-muted-light dark:text-text-muted-dark' },
+                            pdfDoc ? `Rendering page ${pdfCurrentPage}/${pdfTotalPages}...` : 'Generating Preview...'
+                        )
+                    );
+                }
+            
+                if (files.length > 1) {
+                    return React.createElement('div', { className: 'flex items-center gap-4 p-2 overflow-x-auto h-full' },
+                        ...multiPreviewUrls.map((item, index) =>
+                            React.createElement('div', { key: index, className: 'flex-shrink-0 w-32 h-40 bg-background-light dark:bg-surface-dark/50 rounded-md p-1 border border-border-light dark:border-border-dark flex flex-col items-center justify-center' },
+                                item.url
+                                    ? React.createElement('img', { src: item.url, alt: `Preview of ${item.name}`, className: 'max-w-full max-h-28 object-contain' })
+                                    : React.createElement(FileIcon, { className: 'w-12 h-12 text-text-muted-light dark:text-text-muted-dark' }),
+                                React.createElement('p', { className: 'text-xs truncate w-full text-center mt-2' }, item.name)
+                            )
+                        )
+                    );
+                }
+            
+                if (files.length === 1) {
+                    if (previewUrl) {
+                        return React.createElement('div', { className: 'w-full h-full flex flex-col' },
+                            React.createElement('div', { className: 'flex-grow w-full relative flex items-center justify-center min-h-0' },
+                                React.createElement('img', { src: previewUrl, alt: 'File preview', className: 'max-w-full max-h-full object-contain' })
+                            ),
+                            pdfTotalPages > 1 && React.createElement('div', { className: 'flex-shrink-0 flex items-center justify-center gap-4 p-2 border-t border-border-light dark:border-border-dark' },
+                                React.createElement('button', {
+                                    onClick: () => setPdfCurrentPage(p => p - 1),
+                                    disabled: pdfCurrentPage === 1,
+                                    className: 'px-4 py-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors'
+                                }, '‹ Prev'),
+                                React.createElement('span', { className: 'text-sm font-mono text-text-muted-light dark:text-text-muted-dark' }, `Page ${pdfCurrentPage} of ${pdfTotalPages}`),
+                                React.createElement('button', {
+                                    onClick: () => setPdfCurrentPage(p => p + 1),
+                                    disabled: pdfCurrentPage === pdfTotalPages,
+                                    className: 'px-4 py-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors'
+                                }, 'Next ›')
+                            )
+                        );
+                    } else {
+                        return React.createElement('div', { className: 'text-center text-text-muted-light dark:text-text-muted-dark p-4 h-full flex flex-col items-center justify-center' },
+                            React.createElement(FileIcon, { className: 'w-16 h-16 mx-auto mb-2' }),
+                            React.createElement('p', { className: 'font-semibold' }, 'No preview available'),
+                            React.createElement('p', { className: 'text-sm truncate max-w-xs' }, files[0]?.name)
+                        );
+                    }
+                }
+                return null;
+            };
+
+            const renderContent = () => {
+                if (isLoading) return React.createElement('div', { className: "absolute inset-0 flex flex-col items-center justify-center bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-sm z-10" },
+                    React.createElement('div', { className: "spinner w-16 h-16 border-4 border-primary border-t-transparent rounded-full mb-6" }),
+                    React.createElement('p', { className: "text-xl font-semibold text-text-light dark:text-text-dark font-heading" }, loadingText),
+                    React.createElement('p', { className: "text-base text-text-muted-light dark:text-text-muted-dark" }, "Please wait, this may take a moment...")
+                );
+                if (isFullScreen && tool.optionsComponent) {
+                    const OptionsComponent = tool.optionsComponent;
+                    return React.createElement(OptionsComponent, { ref: optionsRef, options, setOptions, files, onProcess: handleProcess, onClose: onClose });
+                }
+                
+                if (!requiresFileUpload && tool.optionsComponent) {
+                    const OptionsComponent = tool.optionsComponent;
+                    return React.createElement('div', { className: "p-6" }, React.createElement(OptionsComponent, { ref: optionsRef, options, setOptions, files }));
+                }
+
+                if (files.length === 0) return React.createElement('div', { onDragEnter: e => handleDragEvents(e, true), onDragLeave: e => handleDragEvents(e, false), onDragOver: (e) => { e.preventDefault(); e.stopPropagation(); }, onDrop: handleDrop, onClick: () => fileInputRef.current?.click(), className: `flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 h-full ${isDragging ? 'border-primary bg-primary/10' : 'border-border-light dark:border-border-dark hover:border-primary'} ${error ? 'border-red-500' : ''}` },
+                    React.createElement(UploadIcon, { className: "w-20 h-20 text-gray-400 dark:text-gray-500 mb-4" }),
+                    React.createElement('p', { className: "text-2xl font-semibold text-text-light dark:text-text-dark font-heading" }, "Drag & drop files here"),
+                    React.createElement('p', { className: "text-lg text-text-muted-light dark:text-text-muted-dark mt-2" }, "or click to select files"),
+                    error && React.createElement('div', { className: "mt-6 p-4 bg-red-100 dark:bg-red-900/50 border border-red-400 text-red-700 dark:text-red-300 rounded-lg text-sm w-full" },
+                        React.createElement('p', { className: "font-bold text-center" }, "Upload Error"),
+                        React.createElement('p', { className: "text-center" }, error)
+                    ),
+                    React.createElement('p', { className: "mt-4 text-sm text-text-muted-light dark:text-text-muted-dark" }, `Accepted file type(s): ${tool.fileType}`),
+                    React.createElement('p', { className: "mt-1 text-xs text-gray-400 dark:text-gray-500" }, "Maximum file size: 50MB"),
+                    React.createElement('input', { type: "file", ref: fileInputRef, multiple: tool.multipleFiles, accept: tool.fileType, onChange: (e) => handleFileChange(e.target.files), className: "hidden" })
+                );
+                
+                const OptionsComponent = tool.optionsComponent;
+                return React.createElement('div', { className: "flex flex-col md:flex-row gap-8 h-full p-6" },
+                    React.createElement('div', { className: "md:w-1/2 h-64 md:h-auto bg-background-light dark:bg-background-dark rounded-lg flex flex-col items-center justify-center border border-border-light dark:border-border-dark overflow-hidden" },
+                        renderPreviewContent()
+                    ),
+                    React.createElement('div', { className: "md:w-1/2 flex flex-col" },
+                        React.createElement('div', { className: "space-y-6 overflow-y-auto pr-2" },
+                            React.createElement('div', null,
+                                React.createElement('h3', { className: "font-semibold text-text-light dark:text-text-dark mb-3 font-heading" }, "Selected Files:"),
+                                React.createElement('ul', { className: "space-y-2 max-h-40 overflow-y-auto p-2 border border-border-light dark:border-border-dark rounded-md" },
+                                    ...files.map((file, index) => React.createElement('li', { key: index, className: "flex items-center justify-between p-3 bg-background-light dark:bg-surface-dark rounded" },
+                                        React.createElement('div', { className: "flex items-center truncate" }, React.createElement(FileIcon, { className: "w-5 h-5 mr-3 text-text-muted-light dark:text-text-muted-dark flex-shrink-0" }), React.createElement('span', { className: "truncate text-sm" }, file.name)),
+                                        React.createElement('button', { onClick: () => removeFile(index), className: "p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" }, React.createElement(TrashIcon, { className: "w-5 h-5 text-red-500" }))
+                                    ))
+                                ),
+                                tool.multipleFiles && React.createElement('button', { onClick: () => fileInputRef.current?.click(), className: "mt-3 w-full text-center bg-gray-200 dark:bg-gray-700 text-sm font-bold py-2 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" }, "Add more files")
+                            ),
+                            OptionsComponent && React.createElement('div', null,
+                                React.createElement('h3', { className: "font-semibold text-text-light dark:text-text-dark mb-3 font-heading" }, "Options:"),
+                                React.createElement(OptionsComponent, { ref: optionsRef, options, setOptions, files })
+                            ),
+                            output && React.createElement('div', null,
+                                React.createElement('h3', { className: "font-semibold text-text-light dark:text-text-dark mb-3 font-heading" }, "Output:"),
+                                output
+                            )
+                        )
+                    )
+                );
+            };
+
+            const showProcessButton = !isFullScreen && (!requiresFileUpload || files.length > 0);
+            
+            return React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4", onClick: onClose },
+                React.createElement('div', { 
+                    className: `bg-surface-light dark:bg-surface-dark shadow-2xl flex overflow-hidden fade-in relative ${isFullScreen ? 'w-screen h-screen max-w-none max-h-none rounded-none' : 'w-full max-w-6xl max-h-[90vh] rounded-lg'}`, 
+                    onClick: (e) => e.stopPropagation(), 
+                    role: "dialog", 
+                    'aria-modal': "true", 
+                    'aria-labelledby': "modal-title" 
+                },
+                    React.createElement('div', { className: 'flex flex-col flex-grow' },
+                        !isFullScreen && React.createElement('header', { className: "flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark flex-shrink-0" },
+                            React.createElement('h2', { id: "modal-title", className: "text-xl font-bold text-text-light dark:text-text-dark font-heading" }, tool.title),
+                            React.createElement('button', { onClick: onClose, className: "p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700", 'aria-label': "Close modal" }, React.createElement(XIcon, { className: "h-6 w-6 text-text-muted-light dark:text-text-muted-dark" }))
+                        ),
+                        React.createElement('main', { className: `flex-grow overflow-y-auto` }, renderContent()),
+                        showProcessButton && React.createElement('footer', { className: "p-4 bg-background-light dark:bg-surface-dark/50 border-t border-border-light dark:border-border-dark flex-shrink-0" },
+                            React.createElement('button', { onClick: handleProcess, className: "w-full bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary-hover transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed" }, tool.title)
+                        )
+                    ),
+                    !isFullScreen && React.createElement('aside', { className: 'w-64 flex-shrink-0 border-l border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4 hidden md:block' },
+                         React.createElement('div', { className: 'h-full flex flex-col justify-center items-center' },
+                             React.createElement('div', { className: 'w-full h-[600px] border-2 border-dashed border-border-light dark:border-border-dark flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg' },
+                                 React.createElement('span', { className: 'text-text-muted-light dark:text-text-muted-dark text-sm' }, 'Advertisement (160x600)')
+                             )
+                         )
+                    )
+                )
+            );
+        };
+      })(AppScope, React);
+      // === END components/Modal.tsx ===
+
+      // === BEGIN App.tsx ===
+      ((scope, React) => {
+        const { useState, useCallback } = React;
+        const { Header, ToolsGrid, About, Footer, Modal, useIntersectionObserver, ThemeProvider } = scope;
+        
+        const AppContent = () => {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [activeTool, setActiveTool] = useState(null);
+
+            useIntersectionObserver('.reveal');
+
+            const openModal = useCallback((tool) => {
+                setActiveTool(tool);
+                setIsModalOpen(true);
+                document.body.style.overflow = 'hidden';
+            }, []);
+
+            const closeModal = useCallback(() => {
+                setIsModalOpen(false);
+                setActiveTool(null);
+                document.body.style.overflow = '';
+            }, []);
+
+            return React.createElement('div', { className: "flex flex-col min-h-screen" },
+                React.createElement(Header, null),
+                React.createElement('main', { className: "flex-grow" },
+                    React.createElement('div', { className: "my-8 reveal flex justify-center" },
+                        React.createElement('div', { className: "w-[728px] h-[90px] border border-dashed border-border-light dark:border-border-dark flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg" },
+                            React.createElement('span', { className: "text-text-muted-light dark:text-text-muted-dark" }, "Advertisement - 728x90")
+                        )
+                    ),
+                    React.createElement(ToolsGrid, { onToolSelect: openModal }),
+                    React.createElement(About, null)
+                ),
+                React.createElement(Footer, null),
+                isModalOpen && activeTool && React.createElement(Modal, { tool: activeTool, onClose: closeModal })
+            );
+        };
+
+        scope.App = () => {
+          return React.createElement(ThemeProvider, null, React.createElement(AppContent, null));
+        };
+      })(AppScope, React);
+      // === END App.tsx ===
+
+      // --- End of inlined modules ---
+
+      // === BEGIN index.tsx (entry point) ===
+      const { App } = AppScope;
+      const rootElement = document.getElementById('root');
+      if (!rootElement) {
+        throw new Error("Could not find root element to mount to");
+      }
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(React.createElement(App));
+      // === END index.tsx ===
     </script>
-    -->
 
-    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
